@@ -18,7 +18,7 @@ const InputBox = ({
       onChange={onChange}
       value={value}
       placeholder={placeholder}
-      className={`w-full px-4 py-3 rounded border ${className}`}
+      className={`w-full ${className}`}
       {...rest}
     />
   );

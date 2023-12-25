@@ -83,6 +83,9 @@ const ChatPage = () => {
   };
 
   const selectChatHandler = (selectedUser) => {
+    if (window.innerWidth < 1024) {
+      setIsOpenChat(true);
+    }
     setSelectedChat(selectedUser);
     if (socket) {
       setLoading(true);
@@ -95,7 +98,7 @@ const ChatPage = () => {
 
   return (
     <>
-      <div className="w-full h-full lg:w-[380px] lg:max-w-[380px] bg-[rgb(245,247,251)] border-r border-zinc-300">
+      <div className="w-full h-full lg:w-[31%]  bg-[rgb(245,247,251)] border-r border-zinc-300">
         <div className="px-6 pt-6">
           <h4 className="mb-0 text-gray-700">Chats</h4>
           <div className="py-1 mt-5 mb-5 rounded bg-[rgb(230,235,245)] h-[3rem] flex items-center">
@@ -129,7 +132,7 @@ const ChatPage = () => {
                     </h4>
                     <p className="text-gray-800 truncate w-full pr-3">fdfdf</p>
                   </div>
-                  <div className="flex flex-col items-end">
+                  <div className="flex flex-col items-end ml-auto lg:ml-0">
                     <span className="text-gray-500">05:13</span>
                     <span className=" flex justify-center items-center text-right border border-red-300 w-7 bg-red-200 rounded-[50%]">
                       10
@@ -142,12 +145,17 @@ const ChatPage = () => {
         </div>
       </div>
       {selectedChat ? (
-        <div className="hidden lg:block lg:w-[calc(100%-455px)] h-screen">
+        <div className="w-full lg:w-[63%] lg:max-w-[65%] h-full">
           <div className="p-4 border-b border-zinc-300 lg:p-6 bg-[aliceblue] h-[14vh]">
             <div className="grid items-center grid-cols-12">
               <div className="col-span-8 sm:col-span-4">
                 <div className="flex items-center">
-                  <div className="mr-2 lg:hidden">
+                  <div
+                    className="mr-2 lg:hidden"
+                    onClick={() => {
+                      setIsOpenChat(false);
+                    }}
+                  >
                     <KeyboardArrowLeftOutlinedIcon />
                   </div>
                   <div className="h-9 w-9 mr-3">
@@ -212,7 +220,7 @@ const ChatPage = () => {
           </form>
         </div>
       ) : (
-        <div className="h-full lg:w-[calc(100%-455px)] flex flex-col items-center justify-center bg-white">
+        <div className="w-full hidden lg:w-[63%] lg:h-full lg:flex lg:flex-col lg:items-center lg:justify-center">
           <img src={logo} alt="" className=" mix-blend-darken w-16 h-16" />
           <p>select a chat</p>
         </div>

@@ -32,10 +32,10 @@ function Signup() {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <form method="post">
-        <div className="bg-white bg-opacity-90 rounded-lg shadow-md w-96 p-8">
-          <img src={logoImage} alt="Logo" className="mx-auto h-16 mb-4" />
-          <h2 className="text-2xl font-semibold text-center mb-6">
-            Sign Up for Chat App
+        <div className="bg-[#ffffff59] bg-opacity-90 rounded-lg shadow-md w-96 p-8">
+          <img src={logoImage} alt="Logo" className="w-20 h-20 mx-auto mix-blend-darken" />
+          <h2 className="text-2xl font-bold text-center mb-6 uppercase">
+            Welcome to chat 
           </h2>
           <div className="mb-4">
             <InputBox
@@ -45,7 +45,7 @@ function Signup() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Username"
-              className="focus:outline-none focus:ring-1 focus:ring-blue-400"
+              className="px-4 py-3  rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
             />
           </div>
           <div className="mb-4">
@@ -56,7 +56,7 @@ function Signup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className="focus:outline-none focus:ring-1 focus:ring-blue-400"
+              className="px-4 py-3  rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
             />
           </div>
           <div className="mb-4">
@@ -67,7 +67,7 @@ function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="focus:outline-none focus:ring-1 focus:ring-blue-400"
+              className="px-4 py-3  rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
             />
           </div>
           <button
@@ -80,7 +80,7 @@ function Signup() {
               "Sign Up"
             )}
           </button>
-          <div className="mt-4 text-center text-gray-600">
+          <div className="mt-4 text-center text-orange-900">
             Already have an account?{" "}
             <Link to="/login" className="text-blue-500">
               Log in

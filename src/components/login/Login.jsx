@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginAction } from "../../redux/features/auth/authAction";
 import Loader from "../loader/Loader";
+
 function Login() {
   const { loading, isAuth, error } = useSelector((state) => state.auth);
   const [email, setEmail] = useState("");
@@ -33,14 +34,14 @@ function Login() {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <form method="post" onSubmit={handleLogin}>
-        <div className="bg-white bg-opacity-90 rounded-lg shadow-lg w-96 p-8">
+        <div className="bg-[#ffffff59] bg-opacity-90 rounded-lg shadow-lg w-96 p-8">
           <img
             src={logoImage}
             alt="Logo"
-            className="mx-auto h-16 mb-4 mix-blend-darken"
+            className="w-20 h-20 mx-auto mix-blend-darken"
           />
-          <h2 className="text-2xl font-semibold text-center mb-6">
-            Log in to Chat App
+          <h2 className="text-2xl font-bold text-center mb-6 uppercase">
+            Log in
           </h2>
           <div className="mb-4">
             <InputBox
@@ -50,7 +51,7 @@ function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className="focus:outline-none focus:ring-1 focus:ring-blue-400"
+              className="px-4 py-3  rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
             />
           </div>
           <div className="mb-4">
@@ -61,7 +62,7 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="focus:outline-none focus:ring-1 focus:ring-blue-400"
+              className="px-4 py-3  rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
             />
           </div>
           <div className="mb-4">
@@ -77,10 +78,10 @@ function Login() {
               "Log In"
             )}
           </button>
-          <div className="mt-4 text-center text-gray-600">
+          <div className="mt-4 text-center text-orange-900">
             Don't have an account?{" "}
             <Link to="/signup" className="text-blue-500">
-              Sign up
+              register
             </Link>
           </div>
         </div>

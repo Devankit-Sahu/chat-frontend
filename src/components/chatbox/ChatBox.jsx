@@ -57,7 +57,7 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
           ref={chatContainerRef}
         >
           {showScrollToBottom && (
-            <div className="absolute z-[1000] bottom-[20px] right-[30px] flex justify-center mt-2">
+            <div className="absolute z-[100] bottom-[20px] right-[30px] flex justify-center mt-2">
               <IconButton
                 onClick={handleScrollToBottom}
                 sx={{

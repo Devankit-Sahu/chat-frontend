@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.message-arrow::after {
+    left: 0;
+    z-index: 100000;
+    content: "";
+    position: absolute;
+    bottom: -9px;
+    border-width: 5px;
+    border-color: transparent;
+    border-top-color: rgb(114,105,239);
+    border-left-color: rgb(114,106,239);
+}
+
+.loader {
+    animation: spin 1s linear infinite; /* Rotation animation */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* .sender_message{
+    float: right;
+}
+.receiver_message{
+    float: left;
+} */

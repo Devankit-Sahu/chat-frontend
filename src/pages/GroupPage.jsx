@@ -36,7 +36,7 @@ const GroupPage = () => {
   const { allGroups } = useSelector((state) => state.allGroups);
   const [open, setOpen] = useState(false);
   const [groupName, setGroupName] = useState("");
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [limit, setLimit] = useState(5);
   const dispatch = useDispatch();
 
   const handleClickOpen = () => {
@@ -51,19 +51,13 @@ const GroupPage = () => {
     dispatch(allUsersAction());
   }, [dispatch]);
 
-  const selectUserHandler = (value) => {
-    const isSelected = selectedUsers.some((user) => user.member_id === value);
-    if (!isSelected) {
-      setSelectedUsers((prevUsers) => [...prevUsers, { member_id: value }]);
-    }
-  };
 
   const createGroupHandler = async () => {
     dispatch(
       newGroupAction({
         groupName,
         groupCreater: user?._id,
-        members: selectedUsers,
+        limit,
       })
     );
     setOpen(false);
@@ -95,57 +89,26 @@ const GroupPage = () => {
                   <InputBox
                     id="group"
                     name="group"
-                    placeholder="Group name"
-                    className="focus:outline-none placeholder:text-gray-600"
+                    placeholder="Enter group name"
+                    className="outline-none border-b-[1px] border-b-[#bab9b9] placeholder:text-gray-600"
                     value={groupName}
                     onChange={(e) => setGroupName(e.target.value)}
                   />
                 </div>
-                <p className="mb-3 capitalize text-black font-medium">
-                  Select members
-                </p>
-                <TableContainer
-                  sx={{
-                    maxHeight: 200,
-                    width: 450,
-                    border: "1px solid",
-                    borderColor: "rgba(224, 224, 224, 1)",
-                  }}
-                >
-                  <Table aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Select</TableCell>
-                        <TableCell>Name</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {users?.map((user, index) => (
-                        <TableRow
-                          key={index}
-                          sx={{
-                            "&:last-child td, &:last-child th": { border: 0 },
-                          }}
-                        >
-                          <TableCell>
-                            <InputBox
-                              type="checkbox"
-                              id="select-box"
-                              name="select-box"
-                              value={user._id}
-                              // checked={selectedUsers.includes(user._id)}
-                              onChange={(e) =>
-                                selectUserHandler(e.target.value)
-                              }
-                              className="w-5"
-                            />
-                          </TableCell>
-                          <TableCell>{user.username}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                <div className="flex gap-x-4">
+                  <p className="text-black font-medium">Limit :</p>
+                  <div className="mb-5">
+                    <InputBox
+                      type="number"
+                      id="group-limit"
+                      name="group-limit"
+                      placeholder="Enter limit"
+                      className="outline-none placeholder:text-gray-600"
+                      value={limit}
+                      onChange={(e) => setLimit(e.target.value)}
+                    />
+                  </div>
+                </div>
               </DialogContent>
               <DialogActions>
                 <Button variant="outlined" color="error" onClick={handleClose}>

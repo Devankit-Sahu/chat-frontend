@@ -45,7 +45,7 @@ function Signup() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Username"
-              className="px-4 py-3  rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
+              className="px-4 py-3 w-full rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
             />
           </div>
           <div className="mb-4">
@@ -56,7 +56,7 @@ function Signup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
-              className="px-4 py-3  rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
+              className="px-4 py-3 w-full rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
             />
           </div>
           <div className="mb-4">
@@ -67,7 +67,7 @@ function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              className="px-4 py-3  rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
+              className="px-4 py-3 w-full rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
             />
           </div>
           <button

@@ -33,7 +33,7 @@ const Layout = () => {
 
   return (
     <SocketProvider socket={socket}>
-      <div className="flex relative h-screen w-screen bg-[#dfdfdf]">
+      <div className="flex relative h-screen bg-[#dfdfdf]">
         <Sidebar />
         <Outlet />
       </div>

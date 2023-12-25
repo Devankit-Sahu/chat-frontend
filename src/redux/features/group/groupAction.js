@@ -3,14 +3,14 @@ import axios from "axios";
 
 export const newGroupAction = createAsyncThunk(
   "group/newGroup",
-  async ({ groupName, groupCreater, members }, { rejectWithValue }) => {
+  async ({ groupName, groupCreater, limit }, { rejectWithValue }) => {
     try {
       const { data } = await axios.post(
         "/api/v1/group/newgroup",
         {
           groupName,
           groupCreater,
-          members,
+          limit,
         },
         {
           headers: {

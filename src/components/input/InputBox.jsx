@@ -18,7 +18,7 @@ const InputBox = ({
       onChange={onChange}
       value={value}
       placeholder={placeholder}
-      className={`w-full ${className}`}
+      className={` ${className}`}
       {...rest}
     />
   );

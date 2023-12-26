@@ -11,7 +11,7 @@ import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import { sendMessageAction } from "../redux/features/chat/sendMessageAction";
 import { useSocket } from "../context/socketContext";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.jpeg";
 
 const ChatPage = () => {
   const isAuth = JSON.parse(localStorage.getItem("isAuthenticated")) || false;
@@ -22,6 +22,7 @@ const ChatPage = () => {
   const [message, setMessage] = useState("");
   const [chatMessage, setChatMessage] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const socket = useSocket();
@@ -83,9 +84,6 @@ const ChatPage = () => {
   };
 
   const selectChatHandler = (selectedUser) => {
-    if (window.innerWidth < 1024) {
-      setIsOpenChat(true);
-    }
     setSelectedChat(selectedUser);
     if (socket) {
       setLoading(true);
@@ -96,12 +94,67 @@ const ChatPage = () => {
     }
   };
 
+  let typingTimer;
+
+  const startTyping = () => {
+    console.log("typing start");
+
+    socket.emit("typing", {
+      sender_id: user?._id,
+      reciever_id: selectedChat._id,
+    });
+  };
+
+  const stopTyping = () => {
+    console.log("typing stop");
+    socket.emit("stopTyping", {
+      sender_id: user?._id,
+      reciever_id: selectedChat._id,
+    });
+  };
+
+  const messageChangeHandler = (e) => {
+    setMessage(e.target.value);
+    startTyping();
+
+    // Clear the previous typing timer
+    clearTimeout(typingTimer);
+
+    // Set a new timer for 1 second
+    typingTimer = setTimeout(() => {
+      stopTyping();
+    }, 1000);
+  };
+
+  useEffect(() => {
+    return () => {
+      // Clear the typing timer when the component unmounts
+      clearTimeout(typingTimer);
+    };
+  }, [typingTimer]);
+
+    useEffect(() => {
+      if (socket) {
+        socket.on("userTyping", function (data) {
+          // Handle user typing event, e.g., display a typing indicator
+          setIsTyping(true);
+          console.log(`User ${data.id} is typing...`);
+        });
+
+        socket.on("userStoppedTyping", function (data) {
+          // Handle user stopped typing event, e.g., remove typing indicator
+          setIsTyping(false);
+          console.log(`User ${data.id} stopped typing.`);
+        });
+      }
+    }, [socket]);
+
   return (
     <>
-      <div className="w-full h-full lg:w-[31%]  bg-[rgb(245,247,251)] border-r border-zinc-300">
-        <div className="px-6 pt-6">
-          <h4 className="mb-0 text-gray-700">Chats</h4>
-          <div className="py-1 mt-5 mb-5 rounded bg-[rgb(230,235,245)] h-[3rem] flex items-center">
+      <div className="w-full h-full lg:w-[25%]  bg-[rgb(234,239,248)] border-r border-zinc-300">
+        <div className="px-6 pt-6 border-b border-zinc-200">
+          <h4 className="mb-0 text-zinc-800">Chats</h4>
+          <div className="py-3 mt-5 mb-5 rounded bg-[rgb(228,230,232)] flex items-center">
             <SearchOutlinedIcon className="text-lg text-gray-400 ml-5" />
             <input
               type="text"
@@ -111,12 +164,11 @@ const ChatPage = () => {
           </div>
         </div>
         <div className="w-full h-[80%]">
-          <h5 className="px-6 mb-4">Recent</h5>
-          <div className="h-[calc(100%-7%)] overflow-auto">
+          <div className="h-full overflow-auto">
             <ul className="flex flex-col">
               {users?.map((user, index) => (
                 <li
-                  className="flex items-center cursor-pointer hover:bg-[#7269ef1a] px-4 py-3"
+                  className="flex items-center cursor-pointer bg-[#eaeaf8] hover:bg-[#7269ef1a] px-4 py-3"
                   key={index}
                   onClick={() => selectChatHandler(user)}
                 >
@@ -134,7 +186,7 @@ const ChatPage = () => {
                   </div>
                   <div className="flex flex-col items-end ml-auto lg:ml-0">
                     <span className="text-gray-500">05:13</span>
-                    <span className=" flex justify-center items-center text-right border border-red-300 w-7 bg-red-200 rounded-[50%]">
+                    <span className=" flex justify-center items-center text-right text-orange-400 font-bold">
                       10
                     </span>
                   </div>
@@ -145,8 +197,8 @@ const ChatPage = () => {
         </div>
       </div>
       {selectedChat ? (
-        <div className="w-full lg:w-[63%] lg:max-w-[65%] h-full">
-          <div className="p-4 border-b border-zinc-300 lg:p-6 bg-[aliceblue] h-[14vh]">
+        <div className="w-full lg:w-[70%] h-full">
+          <div className="p-4 border-b border-zinc-300 lg:p-6 bg-[#dce6ef] h-[14vh]">
             <div className="grid items-center grid-cols-12">
               <div className="col-span-8 sm:col-span-4">
                 <div className="flex items-center">
@@ -196,8 +248,15 @@ const ChatPage = () => {
             selectedChat={selectedChat}
             loading={loading}
             chatMessage={chatMessage}
+            socket={socket}
+            isTyping={isTyping}
           />
-          <form method="post" onSubmit={messageSubmitHandler}>
+          <form
+            method="post"
+            onSubmit={messageSubmitHandler}
+            onFocus={startTyping}
+            onBlur={stopTyping}
+          >
             <div className="flex items-center justify-between h-[10vh] px-10 border-t border-zinc-400 bg-[aliceblue]">
               <div className="w-[90%] bg-[rgb(230,235,245)] h-[6vh] rounded-md">
                 <InputBox
@@ -205,8 +264,8 @@ const ChatPage = () => {
                   id="message-send-input"
                   name="message-send-input"
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="bg-transparent outline-none h-full px-5 placeholder:text-gray-500 focus:border focus:border-purple-500 focus:rounded-md"
+                  onChange={messageChangeHandler}
+                  className="w-full bg-transparent outline-none h-full px-5 placeholder:text-gray-500 focus:border focus:border-purple-500 focus:rounded-md"
                   placeholder="Enter your message"
                 />
               </div>
@@ -220,7 +279,7 @@ const ChatPage = () => {
           </form>
         </div>
       ) : (
-        <div className="w-full hidden lg:w-[63%] lg:h-full lg:flex lg:flex-col lg:items-center lg:justify-center">
+        <div className="w-full bg-[#efefef] hidden lg:w-[70%] lg:h-full lg:flex lg:flex-col lg:items-center lg:justify-center">
           <img src={logo} alt="" className=" mix-blend-darken w-16 h-16" />
           <p>select a chat</p>
         </div>

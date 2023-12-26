@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import logo from "../../assets/logo.png";
-import LightModeIcon from "@mui/icons-material/LightMode";
+import logo from "../../assets/logo.jpeg";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutAction } from "../../redux/features/auth/authAction";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +24,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-full flex flex-row justify-between items-center fixed z-40 bottom-0 bg-white shadow border-t-2 border-t-gray-300 lg:w-[6%] lg:flex lg:flex-col lg:relative lg:h-full">
+    <div className="w-full flex flex-row justify-between items-center fixed z-40 bottom-0 bg-white shadow border-t-2 border-t-gray-300 lg:w-[5%] lg:flex lg:flex-col lg:relative lg:h-full">
       <Link to="/">
         <img src={logo} alt="" className=" mix-blend-darken w-14 h-14" />
       </Link>
@@ -68,24 +66,30 @@ const Sidebar = () => {
               <img
                 src={logo}
                 alt=""
-                className="w-10 h-10 p-1 mx-auto rounded-full bg-gray-50 dark:bg-green-700"
+                className="w-10 h-10 p-1 mx-auto rounded-full border-[3px] border-gray-400"
               />
             </div>
 
             <ul
-              className={`absolute left-[-116px] lg:left-[-11px] translate-y-[-151px] w-40 py-2 mx-4 mb-12 text-left list-none bg-zinc-700 border-none rounded-lg shadow-lg ${
+              className={`absolute left-[-116px] lg:left-[6px] translate-y-[-180px] w-40 py-2 mx-4 mb-12 text-left list-none bg-zinc-600 border-none rounded-lg shadow-lg ${
                 toggleDropdown ? " scale-[1]" : " scale-0"
               } transition-all ease-in duration-[200ms]`}
             >
               <li>
                 <p className="cursor-pointer block w-full px-4 py-2 text-sm font-normal text-gray-700 bg-transparent dropdown-item whitespace-nowrap hover:bg-gray-100/30 dark:text-gray-100 dark:hover:bg-zinc-600/50 ltr:text-left rtl:text-right">
-                  Profile{" "}
+                  Profile
                 </p>
               </li>
-              <li className="my-2 border-b border-gray-100/20"></li>
+              <li>
+                <p className="cursor-pointer block w-full px-4 py-2 text-sm font-normal text-gray-700 bg-transparent dropdown-item whitespace-nowrap hover:bg-gray-100/30 dark:text-gray-100 dark:hover:bg-zinc-600/50 ltr:text-left rtl:text-right">
+                  Change Password
+                </p>
+              </li>
+
+              <li className="my-1 border-b border-gray-100/20"></li>
               <li onClick={handleLogout}>
                 <p className="cursor-pointer block w-full px-4 py-2 text-sm font-normal text-gray-700 bg-transparent dropdown-item whitespace-nowrap hover:bg-gray-100/30 dark:text-gray-100 dark:hover:bg-zinc-600/50 ltr:text-left rtl:text-right">
-                  Log out{" "}
+                  Log out
                 </p>
               </li>
             </ul>

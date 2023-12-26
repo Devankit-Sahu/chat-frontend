@@ -4,10 +4,9 @@ import { Avatar, IconButton } from "@mui/material";
 import Loader from "../loader/Loader";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
-const ChatBox = ({ selectedChat, chatMessage, loading }) => {
+const ChatBox = ({ selectedChat, chatMessage, loading, isTyping }) => {
   const chatContainerRef = useRef(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
-
   const scrollToBottom = () => {
     const container = chatContainerRef.current;
     if (container) {
@@ -42,11 +41,19 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
   }, [chatMessage]);
 
   const handleScrollToBottom = () => {
-    scrollToBottom();
+    const container = chatContainerRef.current;
+    if (container) {
+      container.style.scrollBehavior = "smooth";
+      scrollToBottom();
+      setShowScrollToBottom(false);
+      setTimeout(() => {
+        container.style.scrollBehavior = "auto";
+      }, 500);
+    }
   };
 
   return (
-    <div className="relative h-[76vh] w-full overflow-hidden bg-[#f1f8ff]">
+    <div className="relative h-[80vh] w-full overflow-hidden bg-[#f1f8ff]">
       {loading ? (
         <div className="px-8 py-3 h-full flex items-center justify-center">
           <Loader className="border-t-2 border-t-[#000] w-[60px] h-[60px]" />
@@ -55,6 +62,7 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
         <div
           className="px-8 py-3 overflow-auto h-full  transition-all duration-300 ease-in-out"
           ref={chatContainerRef}
+          onScroll={handleScroll}
         >
           {showScrollToBottom && (
             <div className="absolute z-[100] bottom-[20px] right-[30px] flex justify-center mt-2">
@@ -97,6 +105,12 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
               >
                 <p className="w-full overflow-hidden break-words ">
                   {chat?.message}
+                  {selectedChat._id !== chat?.sender_id && isTyping && (
+                    <div className="visible">
+                      {/* Typing indicator (you can customize this part) */}
+                      <p>Typing...</p>
+                    </div>
+                  )}
                 </p>
                 <p className="text-xs text-black/80 flex items-center justify-end">
                   <AccessTimeIcon

@@ -53,7 +53,7 @@ const ChatBox = ({ selectedChat, chatMessage, loading, isTyping }) => {
   };
 
   return (
-    <div className="relative h-[80vh] w-full overflow-hidden bg-[#f1f8ff]">
+    <div className="relative h-[80vh] w-full overflow-hidden bg-[#fff]">
       {loading ? (
         <div className="px-8 py-3 h-full flex items-center justify-center">
           <Loader className="border-t-2 border-t-[#000] w-[60px] h-[60px]" />
@@ -84,28 +84,28 @@ const ChatBox = ({ selectedChat, chatMessage, loading, isTyping }) => {
             <div
               key={index}
               className={`p-4 max-w-[60%] flex items-start gap-2 ${
-                selectedChat._id !== chat?.sender_id
+                selectedChat?._id !== chat?.sender_id
                   ? "ml-auto justify-end"
                   : "mr-auto"
               }`}
             >
               <div
                 className={`${
-                  selectedChat._id !== chat?.sender_id ? "hidden" : "visible"
+                  selectedChat?._id !== chat?.sender_id ? "hidden" : "visible"
                 }`}
               >
                 <Avatar sx={{ height: "30px", width: "30px" }} />
               </div>
               <div
                 className={`relative max-w-[90%] text-white rounded-lg  ${
-                  selectedChat._id !== chat?.sender_id
+                  selectedChat?._id !== chat?.sender_id
                     ? "bg-[rgb(114,105,239)] rounded-tr-none"
                     : "bg-[rgb(88,195,238)] rounded-tl-none"
                 } py-[10px] px-[8px]`}
               >
                 <p className="w-full overflow-hidden break-words ">
                   {chat?.message}
-                  {selectedChat._id !== chat?.sender_id && isTyping && (
+                  {selectedChat?._id !== chat?.sender_id && isTyping && (
                     <div className="visible">
                       {/* Typing indicator (you can customize this part) */}
                       <p>Typing...</p>
@@ -125,7 +125,7 @@ const ChatBox = ({ selectedChat, chatMessage, loading, isTyping }) => {
                 </p>
                 <div
                   className={`absolute z-[10] border-[5px] border-transparent ${
-                    selectedChat._id !== chat?.sender_id
+                    selectedChat?._id !== chat?.sender_id
                       ? "top-0 right-[-8px] border-t-[rgb(114,105,239)] border-l-[rgb(114,105,239)]"
                       : "top-0 left-[-8px] border-t-[rgb(88,195,238)] border-r-[rgb(88,195,238)]"
                   } `}
@@ -133,6 +133,9 @@ const ChatBox = ({ selectedChat, chatMessage, loading, isTyping }) => {
               </div>
             </div>
           ))}
+          {
+            isTyping && <p>Typing</p>
+          }
         </div>
       )}
     </div>

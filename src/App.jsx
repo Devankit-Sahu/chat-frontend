@@ -6,8 +6,6 @@ import { ToastContainer } from "react-toastify";
 import ChatPage from "./pages/ChatPage";
 import GroupPage from "./pages/GroupPage";
 import { GroupChatContainer, Layout } from "./components";
-import ChatLayout from "./pages/ChatLayout";
-import ChatContainer from "./components/chatbox/ChatContainer";
 
 const router = createBrowserRouter([
   {
@@ -17,13 +15,6 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <ChatPage />,
-        // element: <ChatLayout />,
-        // children: [
-        //   {
-        //     path: ":id",
-        //     element: <ChatContainer />,
-        //   },
-        // ],
       },
       {
         path: "group",

@@ -8,8 +8,8 @@ import { logoutAction } from "../../redux/features/auth/authAction";
 import { useNavigate } from "react-router-dom";
 import { Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
-
-const Sidebar = () => {
+  
+const Sidebar = ({ socket }) => {
   const isAuth = JSON.parse(localStorage.getItem("isAuthenticated"));
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,6 +19,9 @@ const Sidebar = () => {
     if (isAuth) {
       dispatch(logoutAction());
       localStorage.setItem("isAuthenticated", false);
+      if (socket) {
+        socket.disconnect();
+      }
       navigate("/login");
     }
   };

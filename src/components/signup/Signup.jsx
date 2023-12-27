@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import backgroundImage from "../../assets/bg.jpg";
-import logoImage from "../../assets/logo.png";
+import backgroundImage from "../../assets/bg2.jpg";
+import logoImage from "../../assets/logo.jpeg";
 import { Link, useNavigate } from "react-router-dom";
 import InputBox from "../input/InputBox";
 import { useDispatch, useSelector } from "react-redux";
 import { registerAction } from "../../redux/features/auth/authAction";
+import EmailIcon from "@mui/icons-material/Email";
+import LockIcon from "@mui/icons-material/Lock";
+import PersonIcon from "@mui/icons-material/Person";
+
 
 function Signup() {
   const { isAuth, loading } = useSelector((state) => state.auth);
@@ -32,43 +36,56 @@ function Signup() {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <form method="post">
-        <div className="bg-[#ffffff59] bg-opacity-90 rounded-lg shadow-md w-96 p-8">
-          <img src={logoImage} alt="Logo" className="w-20 h-20 mx-auto mix-blend-darken" />
+        <div className="bg-[#fff] bg-opacity-90 rounded-lg shadow-md w-96 p-8">
+          <img
+            src={logoImage}
+            alt="Logo"
+            className="w-20 h-20 mx-auto mix-blend-darken"
+          />
           <h2 className="text-2xl font-bold text-center mb-6 uppercase">
-            Welcome to chat 
+            Welcome to chat
           </h2>
-          <div className="mb-4">
+          <div className="mb-4 flex border-b-2 border-gray-400 py-1">
             <InputBox
               type="text"
               id="username"
               name="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
-              className="px-4 py-3 w-full rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
+              placeholder="Enter your username"
+              className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
             />
+            <span className="flex-[.1] text-gray-600">
+              <PersonIcon />
+            </span>
           </div>
-          <div className="mb-4">
+          <div className="mb-4 flex border-b-2 border-gray-400 py-1">
             <InputBox
               type="email"
               id="email"
               name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="px-4 py-3 w-full rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
+              placeholder="Enter your email"
+              className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
             />
+            <span className="flex-[.1] text-gray-600">
+              <EmailIcon />
+            </span>
           </div>
-          <div className="mb-4">
+          <div className="mb-4 flex border-b-2 border-gray-400 py-1">
             <InputBox
               type="password"
               id="password"
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="px-4 py-3 w-full rounded-[25px] outline-none bg-[#80808066] placeholder:text-black"
+              placeholder="Enter your password"
+              className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
             />
+            <span className="flex-[.1] text-gray-600">
+              <LockIcon />
+            </span>
           </div>
           <button
             onClick={handleSignup}

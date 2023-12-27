@@ -1,17 +1,23 @@
 import { useEffect, useState } from "react";
+import logo from "../assets/logo.jpeg";
 import { InputBox, ChatBox } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { allUsersAction } from "../redux/features/user/alluserAction";
+import { sendMessageAction } from "../redux/features/chat/sendMessageAction";
+import { useSocket } from "../context/socketContext";
+import { Avatar, Button, Tooltip } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import { Avatar } from "@mui/material";
 import KeyboardArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardArrowLeftOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
-import { sendMessageAction } from "../redux/features/chat/sendMessageAction";
-import { useSocket } from "../context/socketContext";
-import logo from "../assets/logo.jpeg";
+import AttachmentIcon from "@mui/icons-material/Attachment";
+import SentimentSatisfiedAltOutlinedIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import CropOriginalOutlinedIcon from "@mui/icons-material/CropOriginalOutlined";
+import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
 
 const ChatPage = () => {
   const isAuth = JSON.parse(localStorage.getItem("isAuthenticated")) || false;
@@ -26,6 +32,14 @@ const ChatPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const socket = useSocket();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     if (isAuth === false) {
@@ -71,18 +85,6 @@ const ChatPage = () => {
     }
   }, [socket]);
 
-  const messageSubmitHandler = (e) => {
-    e.preventDefault();
-    dispatch(
-      sendMessageAction({
-        message,
-        sender_id: user?._id,
-        reciever_id: selectedChat._id,
-      })
-    );
-    setMessage("");
-  };
-
   const selectChatHandler = (selectedUser) => {
     setSelectedChat(selectedUser);
     if (socket) {
@@ -94,6 +96,18 @@ const ChatPage = () => {
     }
   };
 
+  const messageSubmitHandler = (e) => {
+    e.preventDefault();
+    dispatch(
+      sendMessageAction({
+        message,
+        sender_id: user?._id,
+        reciever_id: selectedChat?._id,
+      })
+    );
+    setMessage("");
+  };
+
   let typingTimer;
 
   const startTyping = () => {
@@ -101,7 +115,7 @@ const ChatPage = () => {
 
     socket.emit("typing", {
       sender_id: user?._id,
-      reciever_id: selectedChat._id,
+      reciever_id: selectedChat?._id,
     });
   };
 
@@ -109,7 +123,7 @@ const ChatPage = () => {
     console.log("typing stop");
     socket.emit("stopTyping", {
       sender_id: user?._id,
-      reciever_id: selectedChat._id,
+      reciever_id: selectedChat?._id,
     });
   };
 
@@ -133,28 +147,28 @@ const ChatPage = () => {
     };
   }, [typingTimer]);
 
-    useEffect(() => {
-      if (socket) {
-        socket.on("userTyping", function (data) {
-          // Handle user typing event, e.g., display a typing indicator
-          setIsTyping(true);
-          console.log(`User ${data.id} is typing...`);
-        });
+  useEffect(() => {
+    if (socket) {
+      socket.on("userTyping", function (data) {
+        // Handle user typing event, e.g., display a typing indicator
+        setIsTyping(true);
+        console.log(`User ${data.id} is typing...`);
+      });
 
-        socket.on("userStoppedTyping", function (data) {
-          // Handle user stopped typing event, e.g., remove typing indicator
-          setIsTyping(false);
-          console.log(`User ${data.id} stopped typing.`);
-        });
-      }
-    }, [socket]);
+      socket.on("userStoppedTyping", function (data) {
+        // Handle user stopped typing event, e.g., remove typing indicator
+        setIsTyping(false);
+        console.log(`User ${data.id} stopped typing.`);
+      });
+    }
+  }, [socket]);
 
   return (
     <>
-      <div className="w-full h-full lg:w-[25%]  bg-[rgb(234,239,248)] border-r border-zinc-300">
+      <div className="w-full h-full lg:w-[25%]  bg-[#fff] border-r border-zinc-300">
         <div className="px-6 pt-6 border-b border-zinc-200">
           <h4 className="mb-0 text-zinc-800">Chats</h4>
-          <div className="py-3 mt-5 mb-5 rounded bg-[rgb(228,230,232)] flex items-center">
+          <div className="py-3 mt-5 mb-5 rounded border border-[#e6e6e6] flex items-center">
             <SearchOutlinedIcon className="text-lg text-gray-400 ml-5" />
             <input
               type="text"
@@ -168,9 +182,9 @@ const ChatPage = () => {
             <ul className="flex flex-col">
               {users?.map((user, index) => (
                 <li
-                  className="flex items-center cursor-pointer bg-[#eaeaf8] hover:bg-[#7269ef1a] px-4 py-3"
-                  key={index}
                   onClick={() => selectChatHandler(user)}
+                  key={index}
+                  className="flex items-center cursor-pointer bg-[#fff] hover:bg-[#7269ef1a] px-4 py-3 border-b border-[#ebebeb]"
                 >
                   <div className="w-12 h-12 mr-3 flex items-center relative">
                     <Avatar className="w-full h-full" />
@@ -186,8 +200,8 @@ const ChatPage = () => {
                   </div>
                   <div className="flex flex-col items-end ml-auto lg:ml-0">
                     <span className="text-gray-500">05:13</span>
-                    <span className=" flex justify-center items-center text-right text-orange-400 font-bold">
-                      10
+                    <span className="flex justify-center items-center text-right text-orange-400 font-bold">
+                      0
                     </span>
                   </div>
                 </li>
@@ -198,7 +212,7 @@ const ChatPage = () => {
       </div>
       {selectedChat ? (
         <div className="w-full lg:w-[70%] h-full">
-          <div className="p-4 border-b border-zinc-300 lg:p-6 bg-[#dce6ef] h-[14vh]">
+          <div className="p-4 border-b border-[#e6e6e6] lg:py-4 lg:px-6 bg-[#fff]">
             <div className="grid items-center grid-cols-12">
               <div className="col-span-8 sm:col-span-4">
                 <div className="flex items-center">
@@ -213,20 +227,9 @@ const ChatPage = () => {
                   <div className="h-9 w-9 mr-3">
                     <Avatar />
                   </div>
-                  <div className="flex items-center flex-col">
-                    <h5 className="text-[#000] font-semibold text-[1.2rem]">
-                      {selectedChat?.username}
-                    </h5>
-                    {selectedChat.isOnline ? (
-                      <p className="text-xs font-serif mr-auto capitalize">
-                        Active now
-                      </p>
-                    ) : (
-                      <p className="text-xs font-serif mr-auto capitalize">
-                        offline
-                      </p>
-                    )}
-                  </div>
+                  <h5 className="text-[#000] font-semibold text-[1.2rem]">
+                    {selectedChat?.username}
+                  </h5>
                 </div>
               </div>
               <div className="col-span-4 sm:col-span-8">
@@ -257,8 +260,47 @@ const ChatPage = () => {
             onFocus={startTyping}
             onBlur={stopTyping}
           >
-            <div className="flex items-center justify-between h-[10vh] px-10 border-t border-zinc-400 bg-[aliceblue]">
-              <div className="w-[90%] bg-[rgb(230,235,245)] h-[6vh] rounded-md">
+            <div className="flex items-center justify-between h-[10vh] px-10 border-t border-zinc-400 bg-[#fff]">
+              <div className="flex-[.01] cursor-pointer text-zinc-500">
+                <Tooltip
+                  title="Attachments"
+                  id="basic-button"
+                  aria-controls={open ? "basic-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                  onClick={handleClick}
+                >
+                  <AttachmentIcon />
+                </Tooltip>
+                <Menu
+                  style={{ top: "-40px" }}
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <div className="flex gap-x-2">
+                      <span className="text-gray-600">
+                        <CropOriginalOutlinedIcon />
+                      </span>
+                      <span>Photos & videos</span>
+                    </div>
+                  </MenuItem>
+                  <MenuItem onClick={handleClose}>
+                    <div className="flex gap-x-2">
+                      <span className="text-gray-600">
+                        <PictureAsPdfOutlinedIcon />
+                      </span>
+                      <span>Documents</span>
+                    </div>
+                  </MenuItem>
+                </Menu>
+              </div>
+              <div className="flex-[.88] w-[90%] bg-[rgb(230,235,245)] h-[6vh] rounded-md">
                 <InputBox
                   type="text"
                   id="message-send-input"
@@ -269,9 +311,14 @@ const ChatPage = () => {
                   placeholder="Enter your message"
                 />
               </div>
+              <div className="flex-[.02] cursor-pointer text-zinc-500">
+                <Tooltip title="Emojis">
+                  <SentimentSatisfiedAltOutlinedIcon />
+                </Tooltip>
+              </div>
               <button
                 type="submit"
-                className="bg-[rgb(114,105,239)] p-2 text-white rounded cursor-pointer"
+                className="flex-[.03] bg-[rgb(114,105,239)] p-2 text-white rounded cursor-pointer"
               >
                 <SendIcon />
               </button>
@@ -279,9 +326,15 @@ const ChatPage = () => {
           </form>
         </div>
       ) : (
-        <div className="w-full bg-[#efefef] hidden lg:w-[70%] lg:h-full lg:flex lg:flex-col lg:items-center lg:justify-center">
-          <img src={logo} alt="" className=" mix-blend-darken w-16 h-16" />
-          <p>select a chat</p>
+        <div className="w-full lg:w-[70%] bg-[#fff] h-full flex flex-col items-center justify-center">
+          <img src={logo} alt="" className="mix-blend-darken w-60 h-60" />
+          <p className="text-xl mb-3 font-serif">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Repellendus, laborum?
+          </p>
+          <p className="text-xl mb-3 font-serif text-gray-500">
+            select chats to chat
+          </p>
         </div>
       )}
     </>
@@ -289,3 +342,4 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
+

@@ -3,7 +3,10 @@ import logo from "../assets/logo.jpeg";
 import { InputBox, ChatBox } from "../components";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { allUsersAction } from "../redux/features/user/alluserAction";
+import {
+  allUsersAction,
+  searchUserAction,
+} from "../redux/features/user/alluserAction";
 import { sendMessageAction } from "../redux/features/chat/sendMessageAction";
 import { useSocket } from "../context/socketContext";
 import { Avatar, Button, Tooltip } from "@mui/material";
@@ -18,28 +21,31 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import CropOriginalOutlinedIcon from "@mui/icons-material/CropOriginalOutlined";
 import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
-import axios from "axios";
 
 const ChatPage = () => {
   const isAuth = JSON.parse(localStorage.getItem("isAuthenticated")) || false;
   const user = useSelector((state) => state.currUser.user);
   const { users } = useSelector((state) => state.alluser);
+  const { searchedUsers } = useSelector((state) => state.searchUser);
   const { chat } = useSelector((state) => state.sendMessage);
   const [selectedChat, setSelectedChat] = useState();
+  const [selectedChatIndex, setSelectedChatIndex] = useState(null);
   const [message, setMessage] = useState("");
   const [chatMessage, setChatMessage] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [search, setSearch] = useState("");
-  const [searchedUsers, setSearchedUsers] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const socket = useSocket();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  let typingTimer;
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -88,8 +94,9 @@ const ChatPage = () => {
     }
   }, [socket]);
 
-  const selectChatHandler = (selectedUser) => {
+  const selectChatHandler = (selectedUser, index) => {
     setSelectedChat(selectedUser);
+    setSelectedChatIndex(index);
     if (socket) {
       setLoading(true);
       socket.emit("getAllChats", {
@@ -111,8 +118,6 @@ const ChatPage = () => {
     setMessage("");
   };
 
-  let typingTimer;
-
   const startTyping = () => {
     console.log("typing start");
 
@@ -133,11 +138,7 @@ const ChatPage = () => {
   const messageChangeHandler = (e) => {
     setMessage(e.target.value);
     startTyping();
-
-    // Clear the previous typing timer
     clearTimeout(typingTimer);
-
-    // Set a new timer for 1 second
     typingTimer = setTimeout(() => {
       stopTyping();
     }, 1000);
@@ -145,7 +146,6 @@ const ChatPage = () => {
 
   useEffect(() => {
     return () => {
-      // Clear the typing timer when the component unmounts
       clearTimeout(typingTimer);
     };
   }, [typingTimer]);
@@ -153,28 +153,25 @@ const ChatPage = () => {
   useEffect(() => {
     if (socket) {
       socket.on("userTyping", function (data) {
-        // Handle user typing event, e.g., display a typing indicator
         setIsTyping(true);
-        console.log(`User ${data.id} is typing...`);
       });
 
       socket.on("userStoppedTyping", function (data) {
-        // Handle user stopped typing event, e.g., remove typing indicator
         setIsTyping(false);
-        console.log(`User ${data.id} stopped typing.`);
       });
     }
   }, [socket]);
 
-  const searchHandler = async (e) => {
-    setSearch(e.target.value);
-    if (e.target.value !== "") {
-      const { data } = await axios.get(
-        `/api/v1/users/username/${e.target.value}`
-      );
-      setSearchedUsers(data.user);
-    }
-  };
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      if (search !== "") {
+        dispatch(searchUserAction({ username: search }));
+      }
+    }, 100);
+    return () => {
+      clearTimeout(timeOut);
+    };
+  }, [dispatch, search]);
 
   return (
     <>
@@ -188,7 +185,7 @@ const ChatPage = () => {
               className="border-none bg-transparent outline-none w-[80%] ml-3"
               placeholder="Search user"
               value={search}
-              onChange={searchHandler}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
@@ -199,9 +196,13 @@ const ChatPage = () => {
                 {searchedUsers.length > 0 ? (
                   searchedUsers?.map((user, index) => (
                     <li
-                      onClick={() => selectChatHandler(user)}
+                      onClick={() => selectChatHandler(user, index)}
                       key={index}
-                      className="flex items-center cursor-pointer bg-[#fff] hover:bg-[#7269ef1a] px-4 py-3 border-b border-[#ebebeb]"
+                      className={`flex items-center cursor-pointer ${
+                        selectedChatIndex === index
+                          ? "bg-[#7269ef1a]"
+                          : "bg-[#fff]"
+                      } hover:bg-[#7269ef1a] px-4 py-3 border-b border-[#ebebeb]`}
                     >
                       <div className="w-12 h-12 mr-3 flex items-center relative">
                         <Avatar className="w-full h-full" />
@@ -226,18 +227,20 @@ const ChatPage = () => {
                     </li>
                   ))
                 ) : (
-                  <li className="flex  justify-center">
-                    No users found
-                  </li>
+                  <li className="flex justify-center">No users found</li>
                 )}
               </ul>
             ) : (
               <ul className="flex flex-col">
                 {users?.map((user, index) => (
                   <li
-                    onClick={() => selectChatHandler(user)}
+                    onClick={() => selectChatHandler(user, index)}
                     key={index}
-                    className="flex items-center cursor-pointer bg-[#fff] hover:bg-[#7269ef1a] px-4 py-3 border-b border-[#ebebeb]"
+                    className={`flex  -center cursor-pointer ${
+                      selectedChatIndex === index
+                        ? "bg-[#7269ef1a]"
+                        : "bg-[#fff]"
+                    } hover:bg-[#7269ef1a] px-4 py-3 border-b border-[#ebebeb]`}
                   >
                     <div className="w-12 h-12 mr-3 flex items-center relative">
                       <Avatar className="w-full h-full" />
@@ -339,19 +342,41 @@ const ChatPage = () => {
                   }}
                 >
                   <MenuItem onClick={handleClose}>
-                    <div className="flex gap-x-2">
-                      <span className="text-gray-600">
-                        <CropOriginalOutlinedIcon />
-                      </span>
-                      <span>Photos & videos</span>
+                    <div className="flex gap-x-2 relative">
+                      <label
+                        htmlFor="attachment"
+                        className="flex gap-x-2 cursor-pointer"
+                      >
+                        <span className="text-gray-600">
+                          <CropOriginalOutlinedIcon />
+                        </span>
+                        <span>Photos & videos</span>
+                      </label>
+                      <input
+                        type="file"
+                        name="attachment"
+                        id="attachment"
+                        className="absolute top-0 left-0 w-full opacity-0 cursor-pointer"
+                      />
                     </div>
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
-                    <div className="flex gap-x-2">
-                      <span className="text-gray-600">
-                        <PictureAsPdfOutlinedIcon />
-                      </span>
-                      <span>Documents</span>
+                    <div className="flex gap-x-2 relative">
+                      <label
+                        htmlFor="attachment"
+                        className="flex gap-x-2 cursor-pointer"
+                      >
+                        <span className="text-gray-600">
+                          <PictureAsPdfOutlinedIcon />
+                        </span>
+                        <span>Documents</span>
+                      </label>
+                      <input
+                        type="file"
+                        name="attachment"
+                        id="attachment"
+                        className="absolute top-0 left-0 w-full opacity-0 cursor-pointer"
+                      />
                     </div>
                   </MenuItem>
                 </Menu>
@@ -389,7 +414,7 @@ const ChatPage = () => {
             Repellendus, laborum?
           </p>
           <p className="text-xl mb-3 font-serif text-gray-500">
-            select chats to chat
+            select chats to read messages
           </p>
         </div>
       )}
@@ -398,4 +423,3 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
-

@@ -20,4 +20,23 @@ export const allUsersAction = createAsyncThunk(
     }
   }
 );
+export const searchUserAction = createAsyncThunk(
+  "user/searchUser",
+  async ({ username }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`/api/v1/users/username/${username}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      return data.users;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
 

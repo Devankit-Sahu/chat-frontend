@@ -7,6 +7,7 @@ import sendMessageReducer from "./features/chat/sendMessageSlice";
 import newGroupReducer from "./features/group/newGroupSlice";
 import allGroupsReducer from "./features/group/allGroupsSlice";
 import groupDetailsReducer from "./features/group/groupDetailsSlice";
+import searchUserReducer from "./features/user/searchUserSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     newGroup: newGroupReducer,
     allGroups: allGroupsReducer,
     groupDetails: groupDetailsReducer,
+    searchUser: searchUserReducer,
   },
 });

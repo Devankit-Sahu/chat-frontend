@@ -61,7 +61,7 @@ const Sidebar = ({ socket }) => {
   return (
     <>
       <div className="w-full flex flex-row justify-between items-center fixed z-40 bottom-0 bg-white shadow border-t-2 border-t-gray-300 lg:w-[5%] lg:flex lg:flex-col lg:relative lg:h-full">
-        <Link to="/">
+        <Link to="/dashboard/chat">
           <img src={logo} alt="" className=" mix-blend-darken w-14 h-14" />
         </Link>
         <div className="w-full">
@@ -75,7 +75,7 @@ const Sidebar = ({ socket }) => {
             </Tooltip>
             <Tooltip title="groups" placement="right-end">
               <Link
-                to="/group"
+                to="/dashboard/group"
                 className="flex-grow lg:flex-grow-0 cursor-pointer"
               >
                 <p className="flex justify-center items-center mx-auto h-14 w-14 leading-[14px] rounded-lg text-[rgb(116,120,141)] hover:bg-[#7269ef1a] hover:text-[rgb(114,105,139)]">

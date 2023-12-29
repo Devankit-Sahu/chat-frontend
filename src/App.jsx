@@ -7,14 +7,16 @@ import ChatPage from "./pages/ChatPage";
 import GroupPage from "./pages/GroupPage";
 import { GroupChatContainer, Layout } from "./components";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
+import HomePage from "./pages/HomePage";
 
 const router = createBrowserRouter([
+  { path: "/", element: <HomePage /> },
   {
-    path: "/",
+    path: "/dashboard",
     element: <Layout />,
     children: [
       {
-        path: "/",
+        path: "chat",
         element: <ChatPage />,
       },
       {

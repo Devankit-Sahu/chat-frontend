@@ -205,7 +205,10 @@ const ChatPage = () => {
                       } hover:bg-[#7269ef1a] px-4 py-3 border-b border-[#ebebeb]`}
                     >
                       <div className="w-12 h-12 mr-3 flex items-center relative">
-                        <Avatar className="w-full h-full" />
+                        <Avatar
+                          src={user && user?.avatar?.url}
+                          className="w-full h-full"
+                        />
                         {user.isOnline && (
                           <div className="absolute z-50 w-2 h-2 bg-green-600 rounded-full bottom-0 right-[6px]"></div>
                         )}
@@ -243,7 +246,10 @@ const ChatPage = () => {
                     } hover:bg-[#7269ef1a] px-4 py-3 border-b border-[#ebebeb]`}
                   >
                     <div className="w-12 h-12 mr-3 flex items-center relative">
-                      <Avatar className="w-full h-full" />
+                      <Avatar
+                        src={user && user?.avatar?.url}
+                        className="w-full h-full"
+                      />
                       {user.isOnline && (
                         <div className="absolute z-50 w-2 h-2 bg-green-600 rounded-full bottom-0 right-[6px]"></div>
                       )}

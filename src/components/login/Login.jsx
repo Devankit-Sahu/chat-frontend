@@ -26,7 +26,7 @@ function Login() {
   useEffect(() => {
     if (isAuth) {
       localStorage.setItem("isAuthenticated", JSON.stringify(isAuth));
-      navigate("/");
+      navigate("/dashboard/chat");
     }
   }, [isAuth, navigate]);
 

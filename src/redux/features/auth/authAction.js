@@ -27,17 +27,13 @@ export const loginAction = createAsyncThunk(
 // user register action
 export const registerAction = createAsyncThunk(
   "auth/registerUser",
-  async ({ username, email, password }, { rejectWithValue }) => {
+  async (userData, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post(
-        "/api/v1/users/register",
-        { username, email, password },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const { data } = await axios.post("/api/v1/users/register", userData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return data.success;
     } catch (error) {
       if (error.response && error.response.data.message) {

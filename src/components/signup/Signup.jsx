@@ -8,25 +8,63 @@ import { registerAction } from "../../redux/features/auth/authAction";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import PersonIcon from "@mui/icons-material/Person";
-
+import { Avatar } from "@mui/material";
+import Loader from "../loader/Loader";
 
 function Signup() {
   const { isAuth, loading } = useSelector((state) => state.auth);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState({
+    username: "",
+    email: "",
+    password: "",
+    avatar: null,
+  });
+  const [imagePreview, setImagePreview] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const handleChange = (e) => {
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    setUser({
+      ...user,
+      avatar: selectedFile,
+    });
+
+    // Display the image preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    if (selectedFile) {
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
   const handleSignup = (e) => {
     e.preventDefault();
-    if ((email, password, username)) {
-      dispatch(registerAction({ username, email, password }));
+    const userData = new FormData();
+    userData.append("username", user.username);
+    userData.append("email", user.email);
+    userData.append("password", user.password);
+    if (user.avatar) {
+      userData.append("avatar", user.avatar);
+    }
+    if (userData) {
+      dispatch(registerAction(userData));
     }
   };
   useEffect(() => {
     if (isAuth) {
       localStorage.setItem("isAuth", JSON.stringify(isAuth));
-      navigate("/");
+      navigate("/dashboard/chat");
     }
   }, [isAuth]);
 
@@ -45,13 +83,28 @@ function Signup() {
           <h2 className="text-2xl font-bold text-center mb-6 uppercase">
             Welcome to ChatBuddy
           </h2>
+          <div className="flex justify-center">
+            <label htmlFor="avatar">
+              <Avatar
+                src={imagePreview || ""}
+                sx={{ width: "80px", height: "80px" }}
+              />
+            </label>
+            <input
+              name="avatar"
+              id="avatar"
+              type="file"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </div>
           <div className="mb-4 flex border-b-2 border-gray-400 py-1">
             <InputBox
               type="text"
               id="username"
               name="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={user.username}
+              onChange={handleChange}
               placeholder="Enter your username"
               className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
             />
@@ -64,8 +117,8 @@ function Signup() {
               type="email"
               id="email"
               name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={user.email}
+              onChange={handleChange}
               placeholder="Enter your email"
               className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
             />
@@ -78,8 +131,8 @@ function Signup() {
               type="password"
               id="password"
               name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={user.password}
+              onChange={handleChange}
               placeholder="Enter your password"
               className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
             />

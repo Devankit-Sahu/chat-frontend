@@ -1,13 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./features/auth/authSlice";
 import currentUserReducer from "./features/auth/currentUserSlice";
-import alluserReducer from "./features/user/alluserSlice";
+import alluserReducer from "./features/auth/alluserSlice";
 import chatReducer from "./features/chat/chatSlice";
 import sendMessageReducer from "./features/chat/sendMessageSlice";
 import newGroupReducer from "./features/group/newGroupSlice";
 import allGroupsReducer from "./features/group/allGroupsSlice";
 import groupDetailsReducer from "./features/group/groupDetailsSlice";
-import searchUserReducer from "./features/user/searchUserSlice";
+import searchUserReducer from "./features/auth/searchUserSlice";
+import changePasswordReducer from "./features/auth/changePasswordSlice";
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export const store = configureStore({
     allGroups: allGroupsReducer,
     groupDetails: groupDetailsReducer,
     searchUser: searchUserReducer,
+    changePass: changePasswordReducer,
   },
 });

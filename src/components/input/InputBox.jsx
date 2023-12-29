@@ -1,17 +1,19 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
-const InputBox = ({
-  type = "text",
-  id,
-  name,
-  onChange,
-  value,
-  placeholder,
-  className = "",
-  ...rest
-}) => {
+const InputBox = forwardRef((props, ref) => {
+  const {
+    type = "text",
+    id,
+    name,
+    onChange,
+    value,
+    placeholder,
+    className = "",
+    ...rest
+  } = props;
   return (
     <input
+      ref={ref}
       type={type}
       id={id}
       name={name}
@@ -22,6 +24,6 @@ const InputBox = ({
       {...rest}
     />
   );
-};
+});
 
 export default InputBox;

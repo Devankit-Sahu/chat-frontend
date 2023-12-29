@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { allUsersAction, searchUserAction } from "./alluserAction";
+import { searchUserAction } from "./authAction";
 
 const initialState = {
   searchedUsers: [],

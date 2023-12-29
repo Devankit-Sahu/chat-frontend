@@ -3,13 +3,17 @@ import logo from "../../assets/logo.jpeg";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutAction } from "../../redux/features/auth/authAction";
+import {
+  currentUserDetailsAction,
+  logoutAction,
+} from "../../redux/features/auth/authAction";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Button, Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
+import axios from "axios";
 
 const Sidebar = ({ socket }) => {
   const isAuth = JSON.parse(localStorage.getItem("isAuthenticated"));
@@ -18,7 +22,7 @@ const Sidebar = ({ socket }) => {
   const navigate = useNavigate();
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [about, setAbout] = useState(user?.about || "");
+  const [about, setAbout] = useState("");
   const [isEditable, setIsEditable] = useState(false);
 
   const handleLogout = () => {
@@ -31,6 +35,28 @@ const Sidebar = ({ socket }) => {
       navigate("/login");
     }
   };
+
+  const updateAboutHandler = async () => {
+    const { data } = await axios.patch(
+      "/api/v1/users/update/about",
+      { about },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (data.success) {
+      setIsEditable(false);
+      dispatch(currentUserDetailsAction());
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      setAbout(user.about);
+    }
+  }, [user]);
 
   return (
     <>
@@ -68,14 +94,10 @@ const Sidebar = ({ socket }) => {
         </div>
         <div className="w-20 my-5">
           <div
-            className="cursor-pointer"
+            className="cursor-pointer flex items-center justify-center"
             onClick={() => setToggleDropdown((prev) => !prev)}
           >
-            <img
-              src={logo}
-              alt=""
-              className="w-10 h-10 p-1 mx-auto rounded-full border-[3px] border-gray-400"
-            />
+            <Avatar src={user && user?.avatar?.url} alt="profile" />
           </div>
 
           <div
@@ -102,9 +124,11 @@ const Sidebar = ({ socket }) => {
               </p>
             </li>
             <li>
-              <p className="cursor-pointer block w-full px-4 py-2 text-sm font-normal text-gray-700 bg-transparent dropdown-item whitespace-nowrap hover:bg-gray-100/30 dark:text-gray-100 dark:hover:bg-zinc-600/50 ltr:text-left rtl:text-right">
-                Change Password
-              </p>
+              <Link to="/auth/change-password">
+                <p className="cursor-pointer block w-full px-4 py-2 text-sm font-normal text-gray-700 bg-transparent dropdown-item whitespace-nowrap hover:bg-gray-100/30 dark:text-gray-100 dark:hover:bg-zinc-600/50 ltr:text-left rtl:text-right">
+                  Change Password
+                </p>
+              </Link>
             </li>
 
             <li className="my-1 border-b border-gray-100/20"></li>
@@ -141,15 +165,25 @@ const Sidebar = ({ socket }) => {
           </div>
           <div className="flex flex-col px-10">
             <div className="flex flex-col items-center justify-center border-b border-b-gray-400 pb-4">
-              <div>
-                <label htmlFor="avatar">
-                  <Avatar
-                    sx={{
-                      width: "100px",
-                      height: "100px",
-                    }}
-                    alt="profile"
-                  />
+              <div className="relative">
+                <Avatar
+                  src={user && user?.avatar?.url}
+                  sx={{
+                    width: "100px",
+                    height: "100px",
+                    cursor: "pointer",
+                  }}
+                  alt="profile"
+                />
+                <label
+                  htmlFor="avatar"
+                  className="absolute top-0 right-[-25px]"
+                >
+                  <Tooltip title="wanna update avatar ?">
+                    <CreateOutlinedIcon
+                      sx={{ color: "#6c757d", cursor: "pointer" }}
+                    />
+                  </Tooltip>
                 </label>
                 <input
                   type="file"
@@ -176,10 +210,11 @@ const Sidebar = ({ socket }) => {
                   />
                 </span>
               </div>
-              <input
+              <textarea
                 type="text"
                 value={about}
-                readOnly={isEditable ? false : true}
+                disabled={isEditable ? false : true}
+                rows="4"
                 onChange={(e) => setAbout(e.target.value)}
                 placeholder="write your about here..."
                 className="text-[#6c757d] w-full outline-none border-none"
@@ -187,10 +222,18 @@ const Sidebar = ({ socket }) => {
             </div>
             {isEditable && (
               <div className="mt-10 flex items-center justify-center gap-x-5">
-                <Button color="error" variant="outlined">
+                <Button
+                  color="error"
+                  variant="outlined"
+                  onClick={() => setIsEditable(false)}
+                >
                   cancel
                 </Button>
-                <Button color="success" variant="contained">
+                <Button
+                  color="success"
+                  variant="contained"
+                  onClick={updateAboutHandler}
+                >
                   update
                 </Button>
               </div>

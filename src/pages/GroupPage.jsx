@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { InputBox } from "../components";
 import { useDispatch, useSelector } from "react-redux";
-import { allUsersAction } from "../redux/features/user/alluserAction";
+import { allUsersAction } from "../redux/features/auth/authAction";
 import {
   allGroupsAction,
   newGroupAction,

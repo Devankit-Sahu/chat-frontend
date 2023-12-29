@@ -6,6 +6,7 @@ import Loader from "./loader/Loader";
 import Layout from "./layout/Layout";
 import InputBox from "./input/InputBox";
 import GroupChatContainer from "./groupChatContainer/GroupChatContainer";
+import ChangePassword from "./changepassword/ChangePassword";
 
 export {
   Login,
@@ -16,4 +17,5 @@ export {
   Layout,
   InputBox,
   GroupChatContainer,
+  ChangePassword,
 };

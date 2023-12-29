@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import ChatPage from "./pages/ChatPage";
 import GroupPage from "./pages/GroupPage";
 import { GroupChatContainer, Layout } from "./components";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
   {
     path: "/signup",
     element: <SignupPage />,
+  },
+  {
+    path: "/auth/change-password",
+    element: <ChangePasswordPage />,
   },
 ]);
 const App = () => {

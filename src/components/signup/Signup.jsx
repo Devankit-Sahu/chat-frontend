@@ -43,7 +43,7 @@ function Signup() {
             className="w-20 h-20 mx-auto mix-blend-darken"
           />
           <h2 className="text-2xl font-bold text-center mb-6 uppercase">
-            Welcome to chat
+            Welcome to ChatBuddy
           </h2>
           <div className="mb-4 flex border-b-2 border-gray-400 py-1">
             <InputBox

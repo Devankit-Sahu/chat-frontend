@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "../sidebar/Sidebar";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { currentUserDetailsAction } from "../../redux/features/auth/currentUserAction";
-import { allUsersAction } from "../../redux/features/user/alluserAction";
+import { currentUserDetailsAction } from "../../redux/features/auth/authAction";
+import { allUsersAction } from "../../redux/features/auth/authAction";
 import { SocketProvider } from "../../context/socketContext";
 import { io } from "socket.io-client";
 
@@ -34,7 +34,7 @@ const Layout = () => {
   return (
     <SocketProvider socket={socket}>
       <div className="flex relative h-screen">
-        <Sidebar socket={socket} />
+        <Sidebar socket={socket}  />
         <Outlet />
       </div>
     </SocketProvider>

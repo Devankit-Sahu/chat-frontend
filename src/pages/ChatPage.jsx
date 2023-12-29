@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   allUsersAction,
   searchUserAction,
-} from "../redux/features/user/alluserAction";
+} from "../redux/features/auth/authAction";
 import { sendMessageAction } from "../redux/features/chat/sendMessageAction";
 import { useSocket } from "../context/socketContext";
 import { Avatar, Button, Tooltip } from "@mui/material";

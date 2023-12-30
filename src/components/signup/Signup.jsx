@@ -64,7 +64,7 @@ function Signup() {
   useEffect(() => {
     if (isAuth) {
       localStorage.setItem("isAuth", JSON.stringify(isAuth));
-      navigate("/dashboard/chat");
+      navigate("/dashboard");
     }
   }, [isAuth]);
 

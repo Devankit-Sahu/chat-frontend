@@ -9,7 +9,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   useEffect(() => {
     if (isAuth) {
-      navigate("/dashboard/chat");
+      navigate("/dashboard");
     } else {
       navigate("/");
     }

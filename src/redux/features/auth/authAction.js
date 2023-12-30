@@ -131,6 +131,30 @@ export const changePasswordAction = createAsyncThunk(
     }
   }
 );
+// change avatar action
+export const changeaAvatarAction = createAsyncThunk(
+  "auth/changeaAvatar",
+  async ({ avatar }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.patch(
+        "/api/v1/users/update/avatar",
+        { avatar },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return data.message;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
 
 
 

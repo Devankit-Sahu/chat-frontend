@@ -9,6 +9,7 @@ import allGroupsReducer from "./features/group/allGroupsSlice";
 import groupDetailsReducer from "./features/group/groupDetailsSlice";
 import searchUserReducer from "./features/auth/searchUserSlice";
 import changePasswordReducer from "./features/auth/changePasswordSlice";
+import changeAvatarReducer from "./features/auth/changeAvatarSlice";
 
 export const store = configureStore({
   reducer: {
@@ -22,5 +23,6 @@ export const store = configureStore({
     groupDetails: groupDetailsReducer,
     searchUser: searchUserReducer,
     changePass: changePasswordReducer,
+    changeAvt: changeAvatarReducer,
   },
 });

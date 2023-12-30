@@ -7,6 +7,8 @@ import Layout from "./layout/Layout";
 import InputBox from "./input/InputBox";
 import GroupChatContainer from "./groupChatContainer/GroupChatContainer";
 import ChangePassword from "./changepassword/ChangePassword";
+import ChatContainer from "./chatcontainer/ChatContainer";
+import ChatList from "./chatlist/ChatList";
 
 export {
   Login,
@@ -18,4 +20,6 @@ export {
   InputBox,
   GroupChatContainer,
   ChangePassword,
+  ChatContainer,
+  ChatList,
 };

@@ -2,7 +2,6 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
-import { ToastContainer } from "react-toastify";
 import ChatPage from "./pages/ChatPage";
 import GroupPage from "./pages/GroupPage";
 import { GroupChatContainer, Layout } from "./components";
@@ -16,7 +15,7 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       {
-        path: "chat",
+        path: "",
         element: <ChatPage />,
       },
       {
@@ -47,7 +46,6 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <>
-      <ToastContainer />
       <RouterProvider router={router} />
     </>
   );

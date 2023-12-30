@@ -2,14 +2,14 @@ import React, { useRef, useState } from "react";
 import InputBox from "../input/InputBox";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Button, IconButton } from "@mui/material";
-import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import { Alert, Button, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { changePasswordAction } from "../../redux/features/auth/authAction";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../loader/Loader";
 
 const ChangePassword = () => {
-  const [open, setOpen] = useState(false);
+  const { loading, message, error } = useSelector((state) => state.changePass);
   const [istypeChange, setIsTypeChange] = useState(false);
   const oldPassRef = useRef(null);
   const newPassRef = useRef(null);
@@ -31,24 +31,26 @@ const ChangePassword = () => {
   const changePasswordHandler = () => {
     if (oldPassword && newPassword) {
       dispatch(changePasswordAction({ oldPassword, newPassword }));
+      setOldPassword("");
+      setNewPassword("");
     }
-    setOpen(false);
   };
 
   return (
-    <div className="w-screen h-screen bg-gray-300">
-      <IconButton
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        <KeyboardBackspaceIcon />
-      </IconButton>
+    <div className="w-screen h-screen bg-gray-300 relative">
+      {loading && (
+        <div className="absolute top-0 left-0 bottom-0 w-full bg-[rgba(0,0,0,0.2)] flex flex-col items-center justify-center">
+          <Loader className="border-t-4 border-t-[#000] w-40 h-40" />
+          <p className="mt-4">please wait for a while...</p>
+        </div>
+      )}
       <div className="flex items-center h-full w-full justify-center">
         <div className="w-[500px] p-10 flex flex-col bg-[#fff]">
           <h1 className="mb-5 text-3xl uppercase text-center">
             Change password
           </h1>
+          {error && <Alert severity="error">{error}</Alert>}
+          {message && <Alert severity="success">{message}</Alert>}
           <div className="mb-3">
             <label htmlFor="oldPassword" className="text-black font-[500]">
               Old password
@@ -106,7 +108,7 @@ const ChangePassword = () => {
             <Button
               color="error"
               onClick={() => {
-                navigate("/");
+                navigate("/dashboard");
               }}
             >
               Cancel

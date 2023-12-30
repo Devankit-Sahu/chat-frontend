@@ -4,11 +4,12 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  changeaAvatarAction,
   currentUserDetailsAction,
   logoutAction,
 } from "../../redux/features/auth/authAction";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Button, Tooltip } from "@mui/material";
+import { Alert, Avatar, Button, Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
@@ -18,12 +19,13 @@ import axios from "axios";
 const Sidebar = ({ socket }) => {
   const isAuth = JSON.parse(localStorage.getItem("isAuthenticated"));
   const user = useSelector((state) => state.currUser.user);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [about, setAbout] = useState("");
   const [isEditable, setIsEditable] = useState(false);
+  const [avatar, setAvatar] = useState(null);
+  const [about, setAbout] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     if (isAuth) {
@@ -51,6 +53,13 @@ const Sidebar = ({ socket }) => {
       dispatch(currentUserDetailsAction());
     }
   };
+  const updateAvatarHandler = async () => {
+    dispatch(changeaAvatarAction({ avatar }));
+  };
+
+  const handleFileChange = (e) => {
+    setAvatar(e.target.files[0]);
+  };
 
   useEffect(() => {
     if (user) {
@@ -61,13 +70,16 @@ const Sidebar = ({ socket }) => {
   return (
     <>
       <div className="w-full flex flex-row justify-between items-center fixed z-40 bottom-0 bg-white shadow border-t-2 border-t-gray-300 lg:w-[5%] lg:flex lg:flex-col lg:relative lg:h-full">
-        <Link to="/dashboard/chat">
+        <Link to="/dashboard">
           <img src={logo} alt="" className=" mix-blend-darken w-14 h-14" />
         </Link>
         <div className="w-full">
           <ul className="flex flex-row justify-center w-full lg:flex-col lg:flex">
             <Tooltip title="chats" placement="right-end">
-              <Link to="/" className="flex-grow lg:flex-grow-0 cursor-pointer">
+              <Link
+                to="/dashboard"
+                className="flex-grow lg:flex-grow-0 cursor-pointer"
+              >
                 <p className="flex justify-center items-center mx-auto h-14 w-14 leading-[14px] rounded-lg text-[rgb(116,120,141)] hover:bg-[#7269ef1a] hover:text-[rgb(114,105,139)]">
                   <MessageOutlinedIcon />
                 </p>
@@ -149,7 +161,6 @@ const Sidebar = ({ socket }) => {
         }`}
         onClick={() => setShowProfile(false)}
       >
-        ssdfdsf
         <div
           onClick={(e) => e.stopPropagation()}
           className="absolute top-0 left-0 z-[1000] w-[25%] h-screen bg-[#fff]"
@@ -190,6 +201,7 @@ const Sidebar = ({ socket }) => {
                   name="avatar"
                   id="avatar"
                   className="hidden"
+                  onChange={handleFileChange}
                 />
               </div>
               <p className="text-center mt-5 capitalize text-green-400 text-xl font-semibold">
@@ -238,7 +250,26 @@ const Sidebar = ({ socket }) => {
                 </Button>
               </div>
             )}
+            {avatar && (
+              <div className="mt-10 flex items-center justify-center gap-x-5">
+                <Button
+                  color="error"
+                  variant="outlined"
+                  onClick={() => setIsEditable(false)}
+                >
+                  cancel
+                </Button>
+                <Button
+                  color="success"
+                  variant="contained"
+                  onClick={updateAvatarHandler}
+                >
+                  update avatar
+                </Button>
+              </div>
+            )}
           </div>
+          <Alert className="absolute bottom-0 w-full" severity="error"></Alert>
         </div>
       </div>
     </>

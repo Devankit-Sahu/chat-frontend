@@ -87,7 +87,8 @@ const Sidebar = ({ socket }) => {
             </Tooltip>
             <Tooltip title="groups" placement="right-end">
               <Link
-                to="/dashboard/group"
+                to="/dashboard"
+                // to="/dashboard/group"
                 className="flex-grow lg:flex-grow-0 cursor-pointer"
               >
                 <p className="flex justify-center items-center mx-auto h-14 w-14 leading-[14px] rounded-lg text-[rgb(116,120,141)] hover:bg-[#7269ef1a] hover:text-[rgb(114,105,139)]">
@@ -137,9 +138,9 @@ const Sidebar = ({ socket }) => {
             </li>
             <li>
               <Link to="/auth/change-password">
-                <p className="cursor-pointer block w-full px-4 py-2 text-sm font-normal text-gray-700 bg-transparent dropdown-item whitespace-nowrap hover:bg-gray-100/30 dark:text-gray-100 dark:hover:bg-zinc-600/50 ltr:text-left rtl:text-right">
-                  Change Password
-                </p>
+              <p className="cursor-pointer block w-full px-4 py-2 text-sm font-normal text-gray-700 bg-transparent dropdown-item whitespace-nowrap hover:bg-gray-100/30 dark:text-gray-100 dark:hover:bg-zinc-600/50 ltr:text-left rtl:text-right">
+                Change Password
+              </p>
               </Link>
             </li>
 
@@ -205,7 +206,6 @@ const Sidebar = ({ socket }) => {
                 />
               </div>
               <p className="text-center mt-5 capitalize text-green-400 text-xl font-semibold">
-                {" "}
                 {user?.username}
               </p>
             </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../sidebar/Sidebar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { currentUserDetailsAction } from "../../redux/features/auth/authAction";
 import { allUsersAction } from "../../redux/features/auth/authAction";
@@ -12,11 +12,14 @@ const Layout = () => {
   const user = useSelector((state) => state.currUser.user);
   const [socket, setsocket] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuth) {
       dispatch(currentUserDetailsAction());
       dispatch(allUsersAction());
+    } else {
+      navigate("/login");
     }
   }, [dispatch, isAuth]);
 
@@ -34,7 +37,7 @@ const Layout = () => {
   return (
     <SocketProvider socket={socket}>
       <div className="flex relative h-screen">
-        <Sidebar socket={socket}  />
+        <Sidebar socket={socket} />
         <Outlet />
       </div>
     </SocketProvider>

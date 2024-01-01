@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { sendMessageAction } from "./sendMessageAction";
+import { addAttachmentAction, sendMessageAction } from "./sendMessageAction";
 
 const initialState = {
   chat: null,
@@ -20,4 +20,25 @@ export const sendMessageSlice = createSlice({
   },
 });
 
-export default sendMessageSlice.reducer;
+export const sendMessageReducer = sendMessageSlice.reducer;
+
+const initialState1 = {
+  message: null,
+  error: null,
+};
+
+export const addAttachmentSlice = createSlice({
+  name: "addattachment",
+  initialState: initialState1,
+  extraReducers: (builder) => {
+    builder.addCase(addAttachmentAction.fulfilled, (state, action) => {
+      state.message = action.payload;
+    });
+    builder.addCase(addAttachmentAction.rejected, (state, action) => {
+      state.message = null;
+      state.error = action.payload;
+    });
+  },
+});
+
+export const addAttachmentReducer = addAttachmentSlice.reducer;

@@ -86,6 +86,8 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
     return messageDate.toDateString();
   };
 
+  console.log(chatMessage);
+
   return (
     <div className="relative h-[80vh] w-full overflow-hidden bg-[#fff]">
       {loading ? (
@@ -127,7 +129,6 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
                   <Divider className="w-full">{currentDate}</Divider>
                 ) : null}
                 <div
-                  // key={index}
                   className={`p-4 max-w-[60%] flex items-start gap-2 cursor-pointer ${
                     selectedChat?._id !== chat?.sender_id
                       ? "ml-auto justify-end"
@@ -153,7 +154,18 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
                     <p className="w-full overflow-hidden break-words ">
                       {chat?.message}
                     </p>
-                    <p className="text-xs text-black/80 flex items-center justify-end">
+                    {chat?.attachments && (
+                      <div className="w-[22vw]">
+                        <img
+                          src={chat?.attachments?.url}
+                          className="w-full h-full object-cover"
+                        />
+                        {chat?.attachments?.caption && (
+                          <p className="mt-2">{chat?.attachments?.caption}</p>
+                        )}
+                      </div>
+                    )}
+                    <p className="text-xs text-white/80 flex items-center justify-end">
                       <AccessTimeIcon
                         sx={{ fontSize: "12px", marginRight: "3px" }}
                       />

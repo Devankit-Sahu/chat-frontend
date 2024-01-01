@@ -6,7 +6,6 @@ import {
   allUsersAction,
   searchUserAction,
 } from "../redux/features/auth/authAction";
-import { sendMessageAction } from "../redux/features/chat/sendMessageAction";
 import { useSocket } from "../context/socketContext";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { ChatContainer, ChatList } from "../components";
@@ -19,7 +18,6 @@ const ChatPage = () => {
   const { chat } = useSelector((state) => state.sendMessage);
   const [selectedChat, setSelectedChat] = useState();
   const [selectedChatIndex, setSelectedChatIndex] = useState(null);
-  const [message, setMessage] = useState("");
   const [chatMessage, setChatMessage] = useState([]);
   const [isloading, setisLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -27,17 +25,7 @@ const ChatPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const socket = useSocket();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
   // let typingTimer;
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   useEffect(() => {
     if (isAuth === false) {
@@ -63,25 +51,11 @@ const ChatPage = () => {
         setChatMessage((prevChatMessages) => [...prevChatMessages, chat]);
         socket.emit("newMessage", chat);
       }
-    }
-  }, [socket, chat]);
-
-  useEffect(() => {
-    if (socket) {
       socket.on("receiveMessage", function (data) {
         setChatMessage((prevChatMessages) => [...prevChatMessages, data]);
       });
     }
-  }, [socket]);
-
-  useEffect(() => {
-    if (socket) {
-      socket.on("loadAllChats", function (data) {
-        setChatMessage(data.chats);
-        setisLoading(false);
-      });
-    }
-  }, [socket]);
+  }, [socket, chat]);
 
   const selectChatHandler = (selectedUser, index) => {
     setSelectedChat(selectedUser);
@@ -95,17 +69,25 @@ const ChatPage = () => {
     }
   };
 
-  const messageSubmitHandler = (e) => {
-    e.preventDefault();
-    dispatch(
-      sendMessageAction({
-        message,
-        sender_id: user?._id,
-        reciever_id: selectedChat?._id,
-      })
-    );
-    setMessage("");
-  };
+  useEffect(() => {
+    if (socket) {
+      socket.on("loadAllChats", function (data) {
+        setChatMessage(data.chats);
+        setisLoading(false);
+      });
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    const timeOut = setTimeout(() => {
+      if (search !== "") {
+        dispatch(searchUserAction({ username: search }));
+      }
+    }, 100);
+    return () => {
+      clearTimeout(timeOut);
+    };
+  }, [dispatch, search]);
 
   // const startTyping = () => {
   //   console.log("typing start");
@@ -124,15 +106,6 @@ const ChatPage = () => {
   //   });
   // };
 
-  const messageChangeHandler = (e) => {
-    setMessage(e.target.value);
-    // startTyping();
-    // clearTimeout(typingTimer);
-    // typingTimer = setTimeout(() => {
-    //   stopTyping();
-    // }, 1000);
-  };
-
   // useEffect(() => {
   //   return () => {
   //     clearTimeout(typingTimer);
@@ -150,17 +123,6 @@ const ChatPage = () => {
   //     });
   //   }
   // }, [socket]);
-
-  useEffect(() => {
-    const timeOut = setTimeout(() => {
-      if (search !== "") {
-        dispatch(searchUserAction({ username: search }));
-      }
-    }, 100);
-    return () => {
-      clearTimeout(timeOut);
-    };
-  }, [dispatch, search]);
 
   return (
     <>
@@ -189,17 +151,10 @@ const ChatPage = () => {
           selectedChat={selectedChat}
           loading={isloading}
           chatMessage={chatMessage}
-          socket={socket}
+          user={user}
           // isTyping={isTyping}
-          message={message}
-          onMessageChange={messageChangeHandler}
-          onMessageSubmit={messageSubmitHandler}
           // startTyping={startTyping}
           // stopTyping={stopTyping}
-          handleClick={handleClick}
-          handleClose={handleClose}
-          anchorEl={anchorEl}
-          open={open}
         />
       ) : (
         <div className="w-full lg:w-[70%] bg-[#fff] h-full flex flex-col items-center justify-center">

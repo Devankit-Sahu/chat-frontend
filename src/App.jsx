@@ -1,12 +1,15 @@
-import React from "react";
+import React, { lazy } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import SignupPage from "./pages/SignupPage";
-import ChatPage from "./pages/ChatPage";
-import GroupPage from "./pages/GroupPage";
-import { GroupChatContainer, Layout } from "./components";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
-import HomePage from "./pages/HomePage";
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const SignupPage = lazy(() => import("./pages/SignupPage"));
+const ChatPage = lazy(() => import("./pages/ChatPage"));
+const GroupPage = lazy(() => import("./pages/GroupPage"));
+const GroupChatContainer = lazy(() =>
+  import("./components/groupChatContainer/GroupChatContainer")
+);
+const Layout = lazy(() => import("./components/layout/Layout"));
+const ChangePasswordPage = lazy(() => import("./pages/ChangePasswordPage"));
+const HomePage = lazy(() => import("./pages/HomePage"));
 
 const router = createBrowserRouter([
   { path: "/", element: <HomePage /> },

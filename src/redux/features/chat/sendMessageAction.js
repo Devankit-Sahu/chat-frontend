@@ -24,3 +24,30 @@ export const sendMessageAction = createAsyncThunk(
     }
   }
 );
+
+export const addAttachmentAction = createAsyncThunk(
+  "chat/addAttachment",
+  async (
+    { caption, sender_id, reciever_id, attachment },
+    { rejectWithValue }
+  ) => {
+    try {
+      const { data } = await axios.post(
+        "/api/v1/chats/add/attachments",
+        { caption, sender_id, reciever_id, attachment },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return data.message;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);

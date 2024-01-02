@@ -5,7 +5,8 @@ import alluserReducer from "./features/auth/alluserSlice";
 import chatReducer from "./features/chat/chatSlice";
 import {
   sendMessageReducer,
-  addAttachmentReducer,
+  deleteChatsReducer,
+  deleteSingleChatReducer,
 } from "./features/chat/sendMessageSlice";
 import newGroupReducer from "./features/group/newGroupSlice";
 import allGroupsReducer from "./features/group/allGroupsSlice";
@@ -27,6 +28,9 @@ export const store = configureStore({
     searchUser: searchUserReducer,
     changePass: changePasswordReducer,
     changeAvt: changeAvatarReducer,
-    addAtt: addAttachmentReducer,
+    delChats: deleteChatsReducer,
+    delSingleChat: deleteSingleChatReducer,
+    // addAtt: addAttachmentReducer,
   },
 });
+  

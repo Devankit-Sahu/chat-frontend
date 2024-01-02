@@ -16,77 +16,46 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const DialogBox = ({
   open,
-  handleClickOpen,
   handleClose,
-  attachment,
-  caption,
-  setCaption,
-  handleCloseFileChange,
+  // handleCloseFileChange,
+  title,
+  contentText,
+  actionText1,
+  actionText2,
 }) => {
   return (
-    <div
-      className="absolute left-0 top-0 z-[1000] bottom-0 w-full "
-      onClick={handleClickOpen}
+    <Dialog
+      open={open}
+      TransitionComponent={Transition}
+      keepMounted
+      onClose={handleClose}
+      aria-describedby="alert-dialog-slide-description"
     >
-      <div
-        className="w-[25vw] rounded-md absolute left-[30px] bottom-[10px] bg-[aliceblue]"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="w-[23vw] h-[320px] mx-auto ">
-          <img src={attachment} className="w-full h-full object-cover" />
-        </div>
-        <InputBox
-          type="text"
-          className="w-full py-3 border-none outline-none px-3"
-          placeholder="Write caption (optional)"
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-        />
-        <div className="flex items-center px-4 justify-between py-2">
-          <span className="text-zinc-600 cursor-pointer">
-            <SentimentSatisfiedAltOutlinedIcon />
-          </span>
-          <button
-            type="submit"
-            className=" bg-[rgb(114,105,239)] px-2 py-1 text-white rounded cursor-pointer"
-          >
-            <SendIcon />
-          </button>
-        </div>
-      </div>
-      <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-describedby="alert-dialog-slide-description"
-      >
-        <DialogTitle sx={{ fontWeight: 600 }}>
-          Discard unsent message?
-        </DialogTitle>
+      {title && <DialogTitle sx={{ fontWeight: 600 }}>{title}</DialogTitle>}
+      {contentText && (
         <DialogContent>
           <DialogContentText
             sx={{ color: "black" }}
             id="alert-dialog-slide-description"
           >
-            Your message, including attached media, will not be sent if you
-            leave this screen.
+            {contentText}
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: "center", gap: "20px" }}>
-          <Button
-            variant="contained"
-            color="success"
-            onClick={handleCloseFileChange}
-          >
-            Discard changes
-          </Button>
-          <Button variant="contained" color="primary" onClick={handleClose}>
-            Return to media
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+      )}
+      <DialogActions sx={{ justifyContent: "center", gap: "20px" }}>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={handleCloseFileChange}
+          // onClick={handleCloseFileChange}
+        >
+          {actionText1}
+        </Button>
+        <Button variant="contained" color="primary" onClick={handleClose}>
+          {actionText2}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

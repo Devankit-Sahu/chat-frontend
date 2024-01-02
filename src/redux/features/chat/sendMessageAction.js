@@ -25,21 +25,60 @@ export const sendMessageAction = createAsyncThunk(
   }
 );
 
-export const addAttachmentAction = createAsyncThunk(
-  "chat/addAttachment",
+// export const addAttachmentAction = createAsyncThunk(
+//   "chat/addAttachment",
+//   async (
+//     { caption, sender_id, reciever_id, attachment },
+//     { rejectWithValue }
+//   ) => {
+//     try {
+//       const { data } = await axios.post(
+//         "/api/v1/chats/add/attachments",
+//         { caption, sender_id, reciever_id, attachment },
+//         {
+//           headers: {
+//             "Content-Type": "multipart/form-data",
+//           },
+//         }
+//       );
+//       return data.nAttachments;
+//     } catch (error) {
+//       if (error.response && error.response.data.message) {
+//         return rejectWithValue(error.response.data.message);
+//       } else {
+//         return rejectWithValue(error.message);
+//       }
+//     }
+//   }
+// );
+
+export const deleteChatsAction = createAsyncThunk(
+  "chat/deleteChats",
   async (
-    { caption, sender_id, reciever_id, attachment },
+    { sender_id, reciever_id },
     { rejectWithValue }
   ) => {
     try {
-      const { data } = await axios.post(
-        "/api/v1/chats/add/attachments",
-        { caption, sender_id, reciever_id, attachment },
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+      const { data } = await axios.delete(
+        `/api/v1/chats/delete/sender=${sender_id}/reciever=${reciever_id}`
+      );
+      return data.message;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const deleteSingleChatAction = createAsyncThunk(
+  "chat/deleteSingleChat",
+  async ({ chat_id }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(
+        `/api/v1/chats/delete/chat-id=${chat_id}`
       );
       return data.message;
     } catch (error) {

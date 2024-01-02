@@ -15,6 +15,10 @@ const HomePage = () => {
     }
   }, [isAuth, navigate]);
 
+  const handleClick = () => {
+    navigate("/login");
+  };
+
   return (
     <div
       className="w-full h-screen bg-no-repeat bg-cover bg-center"
@@ -30,7 +34,7 @@ const HomePage = () => {
             expedita, nihil odit optio accusamus placeat? Quas vitae similique
             ad laudantium.
           </p>
-          <Button onClick={() => navigate("/login")} variant="contained">
+          <Button onClick={handleClick} variant="contained">
             Get started
           </Button>
         </div>

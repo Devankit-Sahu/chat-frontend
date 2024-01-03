@@ -86,8 +86,6 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
     return messageDate.toDateString();
   };
 
-  console.log(chatMessage);
-
   return (
     <div className="relative h-[80vh] w-full overflow-hidden bg-[#fff]">
       {loading ? (

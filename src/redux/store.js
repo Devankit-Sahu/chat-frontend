@@ -8,12 +8,12 @@ import {
   deleteChatsReducer,
   deleteSingleChatReducer,
 } from "./features/chat/sendMessageSlice";
-import newGroupReducer from "./features/group/newGroupSlice";
-import allGroupsReducer from "./features/group/allGroupsSlice";
-import groupDetailsReducer from "./features/group/groupDetailsSlice";
 import searchUserReducer from "./features/auth/searchUserSlice";
 import changePasswordReducer from "./features/auth/changePasswordSlice";
-import changeAvatarReducer from "./features/auth/changeAvatarSlice";
+import {
+  changeAboutReducer,
+  changeAvatarReducer,
+} from "./features/auth/changeAvatarSlice";
 
 export const store = configureStore({
   reducer: {
@@ -22,11 +22,9 @@ export const store = configureStore({
     alluser: alluserReducer,
     chat: chatReducer,
     sendMessage: sendMessageReducer,
-    newGroup: newGroupReducer,
-    allGroups: allGroupsReducer,
-    groupDetails: groupDetailsReducer,
     searchUser: searchUserReducer,
     changePass: changePasswordReducer,
+    changeAbout: changeAboutReducer,
     changeAvt: changeAvatarReducer,
     delChats: deleteChatsReducer,
     delSingleChat: deleteSingleChatReducer,

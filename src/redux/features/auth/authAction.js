@@ -131,9 +131,33 @@ export const changePasswordAction = createAsyncThunk(
     }
   }
 );
+// change about action
+export const changeAboutAction = createAsyncThunk(
+  "auth/changeAbout",
+  async ({ about }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.patch(
+        "/api/v1/users/update/about",
+        { about },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return data.message;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
 // change avatar action
-export const changeaAvatarAction = createAsyncThunk(
-  "auth/changeaAvatar",
+export const changeAvatarAction = createAsyncThunk(
+  "auth/changeAvatar",
   async ({ avatar }, { rejectWithValue }) => {
     try {
       const { data } = await axios.patch(

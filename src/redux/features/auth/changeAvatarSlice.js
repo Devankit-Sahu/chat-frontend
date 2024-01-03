@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { changeaAvatarAction } from "./authAction";
+import { changeAboutAction, changeAvatarAction } from "./authAction";
 
 const initialState = {
   error: null,
@@ -7,18 +7,18 @@ const initialState = {
   loading: false,
 };
 
-export const changeAvatarSlice = createSlice({
-  name: "changeAvatar",
+export const changeAboutSlice = createSlice({
+  name: "changeAbout",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(changeaAvatarAction.pending, (state, action) => {
+    builder.addCase(changeAboutAction.pending, (state, action) => {
       state.loading = true;
     });
-    builder.addCase(changeaAvatarAction.fulfilled, (state, action) => {
+    builder.addCase(changeAboutAction.fulfilled, (state, action) => {
       state.loading = false;
       state.message = action.payload;
     });
-    builder.addCase(changeaAvatarAction.rejected, (state, action) => {
+    builder.addCase(changeAboutAction.rejected, (state, action) => {
       state.loading = false;
       state.message = null;
       state.error = action.payload;
@@ -26,4 +26,31 @@ export const changeAvatarSlice = createSlice({
   },
 });
 
-export default changeAvatarSlice.reducer;
+export const changeAboutReducer = changeAboutSlice.reducer;
+
+const initialState1 = {
+  error: null,
+  message: null,
+  loading: false,
+};
+
+export const changeAvatarSlice = createSlice({
+  name: "changeAvatar",
+  initialState: initialState1,
+  extraReducers: (builder) => {
+    builder.addCase(changeAvatarAction.pending, (state, action) => {
+      state.loading = true;
+    });
+    builder.addCase(changeAvatarAction.fulfilled, (state, action) => {
+      state.loading = false;
+      state.message = action.payload;
+    });
+    builder.addCase(changeAvatarAction.rejected, (state, action) => {
+      state.loading = false;
+      state.message = null;
+      state.error = action.payload;
+    });
+  },
+});
+
+export const changeAvatarReducer = changeAvatarSlice.reducer;

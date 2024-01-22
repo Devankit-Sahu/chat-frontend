@@ -15,18 +15,18 @@ const Layout = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isAuth) {
+    if (isAuth === false) {
+      navigate("/login");
+    } else {
       dispatch(currentUserDetailsAction());
       dispatch(allUsersAction());
-    } else {
-      navigate("/login");
     }
-  }, [dispatch, isAuth]);
+  }, [dispatch, isAuth, navigate]);
 
   useEffect(() => {
     if (isAuth) {
       if (user) {
-        const newSocket = io("http://localhost:8080", {
+        const newSocket = io("https://chat-api-j4ga.onrender.com", {
           auth: { id: user?._id },
         });
         setsocket(newSocket);

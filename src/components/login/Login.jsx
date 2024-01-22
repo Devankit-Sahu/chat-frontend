@@ -25,12 +25,9 @@ function Login() {
 
   useEffect(() => {
     if (isAuth) {
+      navigate("/");
       localStorage.setItem("isAuthenticated", JSON.stringify(isAuth));
-      navigate("/dashboard");
-    }
-    if (isAuth === false) {
-      navigate("/dashboard");
-    }
+    } 
   }, [isAuth, navigate]);
 
   return (

@@ -28,6 +28,9 @@ function Login() {
       localStorage.setItem("isAuthenticated", JSON.stringify(isAuth));
       navigate("/dashboard");
     }
+    if (isAuth === false) {
+      navigate("/dashboard");
+    }
   }, [isAuth, navigate]);
 
   return (

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from "../../../config/axios-config";
+
 // user login action
 export const loginAction = createAsyncThunk(
   "auth/loginUser",
@@ -116,11 +117,15 @@ export const changePasswordAction = createAsyncThunk(
   "auth/changePassword",
   async ({ oldPassword, newPassword }, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post("/api/v1/users/change/password", {oldPassword,newPassword},{
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const { data } = await axios.post(
+        "/api/v1/users/change/password",
+        { oldPassword, newPassword },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       return data.message;
     } catch (error) {
       if (error.response && error.response.data.message) {

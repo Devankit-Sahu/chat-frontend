@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from "../../../config/axios-config";
 
 export const allChatsAction = createAsyncThunk(
   "chat/allChats",

@@ -60,6 +60,7 @@ export const currentUserDetailsAction = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true,
       });
       return data.user;
     } catch (error) {
@@ -81,6 +82,7 @@ export const allUsersAction = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true,
       });
       return data.users;
     } catch (error) {
@@ -101,6 +103,7 @@ export const searchUserAction = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true,
       });
       return data.users;
     } catch (error) {
@@ -124,6 +127,7 @@ export const changePasswordAction = createAsyncThunk(
           headers: {
             "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
       );
       return data.message;
@@ -148,6 +152,7 @@ export const changeAboutAction = createAsyncThunk(
           headers: {
             "Content-Type": "application/json",
           },
+          withCredentials: true,
         }
       );
       return data.message;
@@ -172,6 +177,7 @@ export const changeAvatarAction = createAsyncThunk(
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          withCredentials: true,
         }
       );
       return data.message;

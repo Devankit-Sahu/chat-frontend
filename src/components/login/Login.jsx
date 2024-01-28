@@ -8,6 +8,7 @@ import { loginAction } from "../../redux/features/auth/authAction";
 import Loader from "../loader/Loader";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
+import axios from "axios";
 
 function Login() {
   const { loading, isAuth, error } = useSelector((state) => state.auth);
@@ -27,7 +28,7 @@ function Login() {
     if (isAuth) {
       navigate("/");
       localStorage.setItem("isAuthenticated", JSON.stringify(isAuth));
-    } 
+    }
   }, [isAuth, navigate]);
 
   return (

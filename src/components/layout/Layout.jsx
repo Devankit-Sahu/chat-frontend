@@ -26,7 +26,7 @@ const Layout = () => {
   useEffect(() => {
     if (isAuth) {
       if (user) {
-        const newSocket = io("https://chat-api-j4ga.onrender.com", {
+        const newSocket = io("https://chat-api-p1om.onrender.com", {
           auth: { id: user?._id },
         });
         setsocket(newSocket);

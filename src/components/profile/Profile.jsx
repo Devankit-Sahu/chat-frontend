@@ -18,12 +18,14 @@ const Profile = ({
 }) => {
   return (
     <div
-      className="absolute z-[100] top-0 left-0 w-[100%] h-screen bg-[rgba(0,0,0,0.2)]"
+      className={`absolute top-0 z-10 h-full w-screen transition-all duration-300 ease-in-out bg-[rgba(0,0,0,0.2)] ${
+        showProfile ? "left-0" : "-left-[100rem]"
+      }`}
       onClick={() => setShowProfile(false)}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="absolute top-0 left-0 z-[1000] w-[25%] h-screen bg-[#fff]"
+        className="w-[25%] bg-white h-full"
       >
         <div className="flex justify-between p-5 relative">
           <h1 className="text-2xl font-bold">Profile</h1>
@@ -125,7 +127,7 @@ const Profile = ({
             </div>
           )}
         </div>
-        <Alert className="absolute bottom-0 w-full" severity="error"></Alert>
+        <Alert className="absolute bottom-0 w-[25%]" severity="error"></Alert>
       </div>
     </div>
   );

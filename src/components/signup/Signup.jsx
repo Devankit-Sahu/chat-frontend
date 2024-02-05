@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
-import backgroundImage from "../../assets/bg2.jpg";
-import logoImage from "../../assets/logo.jpeg";
-import { Link, useNavigate } from "react-router-dom";
 import InputBox from "../input/InputBox";
+import backgroundImage from "../../assets/bg.jpg";
+import { FaFacebookMessenger } from "react-icons/fa6";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { registerAction } from "../../redux/features/auth/authAction";
-import EmailIcon from "@mui/icons-material/Email";
-import LockIcon from "@mui/icons-material/Lock";
-import PersonIcon from "@mui/icons-material/Person";
 import { Avatar } from "@mui/material";
 import Loader from "../loader/Loader";
 
@@ -29,7 +26,6 @@ function Signup() {
       [e.target.name]: e.target.value,
     });
   };
-
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
 
@@ -69,19 +65,18 @@ function Signup() {
   }, [isAuth]);
 
   return (
-    <div
-      className="bg-cover bg-center min-h-screen flex items-center justify-center"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
-      <form method="post">
-        <div className="bg-[#fff] bg-opacity-90 rounded-lg shadow-md w-96 p-8">
-          <img
-            src={logoImage}
-            alt="Logo"
-            className="w-20 h-20 mx-auto mix-blend-darken"
-          />
-          <h2 className="text-2xl font-bold text-center mb-6 uppercase">
-            Welcome to ChatBuddy
+    <div className="h-screen w-screen flex">
+      <div
+        className="hidden sm:block sm:w-[50%] bg-cover bg-center bg-no-repeat h-full"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      ></div>
+      <div className="w-full sm:w-[50%] bg-[#ffffff50] flex items-center justify-center">
+        <form method="post" className="w-[80%]" onSubmit={handleSignup}>
+          <div className="flex justify-center items-center my-2">
+            <FaFacebookMessenger className="text-[4rem] text-[#6A21E2]" />
+          </div>
+          <h2 className="text-xl text-[#274BF4] md:text-3xl font-semibold text-center mb-6 capitalize my-5">
+            create an account
           </h2>
           <div className="flex justify-center">
             <label htmlFor="avatar">
@@ -98,66 +93,60 @@ function Signup() {
               className="hidden"
             />
           </div>
-          <div className="mb-4 flex border-b-2 border-gray-400 py-1">
+          <div className="my-5">
             <InputBox
+              labelName="Username"
+              labelClassName="mb-3 text-sm"
               type="text"
               id="username"
               name="username"
               value={user.username}
               onChange={handleChange}
-              placeholder="Enter your username"
-              className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
+              placeholder="username"
+              className="w-full h-10 border-b-[1px] border-solid border-b-[#878484] outline-none placeholder:text-gray-600"
             />
-            <span className="flex-[.1] text-gray-600">
-              <PersonIcon />
-            </span>
           </div>
-          <div className="mb-4 flex border-b-2 border-gray-400 py-1">
+          <div className="my-5">
             <InputBox
+              labelName="Email"
+              labelClassName="mb-3 text-sm"
               type="email"
               id="email"
               name="email"
               value={user.email}
               onChange={handleChange}
-              placeholder="Enter your email"
-              className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
+              placeholder="example@gmail.com"
+              className="w-full h-10 border-b-[1px] border-solid border-b-[#878484] outline-none placeholder:text-gray-600"
             />
-            <span className="flex-[.1] text-gray-600">
-              <EmailIcon />
-            </span>
           </div>
-          <div className="mb-4 flex border-b-2 border-gray-400 py-1">
+          <div className="my-5">
             <InputBox
+              labelName="Password"
+              labelClassName="mb-3 text-sm"
               type="password"
               id="password"
               name="password"
               value={user.password}
               onChange={handleChange}
               placeholder="Enter your password"
-              className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
+              className="w-full h-10 border-b-[1px] border-solid border-b-[#878484] outline-none placeholder:text-gray-600"
             />
-            <span className="flex-[.1] text-gray-600">
-              <LockIcon />
-            </span>
           </div>
-          <button
-            onClick={handleSignup}
-            className="w-full bg-blue-500 text-white font-semibold py-3 rounded hover:bg-blue-600 active:scale-[.9]"
-          >
+          <button className="w-full bg-blue-500 text-white font-semibold py-3 rounded hover:bg-blue-600 active:scale-[.9]">
             {loading ? (
               <Loader className="border-t-2 border-t-[#fff] w-[22px] h-[22px]" />
             ) : (
               "Sign Up"
             )}
           </button>
-          <div className="mt-4 text-center text-orange-900">
+          <div className="mt-4 text-center">
             Already have an account?{" "}
             <Link to="/login" className="text-blue-500">
-              Log in
+              Sign In
             </Link>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

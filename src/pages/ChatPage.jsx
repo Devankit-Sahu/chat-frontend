@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import logo from "../assets/logo.jpeg";
+import { FaFacebookMessenger } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,19 +13,18 @@ import { ChatContainer, ChatList } from "../components";
 const ChatPage = () => {
   const isAuth = JSON.parse(localStorage.getItem("isAuthenticated")) || false;
   const user = useSelector((state) => state.currUser.user);
-  const { loading, users } = useSelector((state) => state.alluser);
+  const { users } = useSelector((state) => state.alluser);
   const { searchedUsers } = useSelector((state) => state.searchUser);
   const { chat } = useSelector((state) => state.sendMessage);
-  const [selectedChat, setSelectedChat] = useState();
+  const [isChatSelected, setIsChatSelected] = useState(false);
+  const [selectedUser, setSelectedUser] = useState({});
   const [selectedChatIndex, setSelectedChatIndex] = useState(null);
   const [chatMessage, setChatMessage] = useState([]);
   const [isloading, setisLoading] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const socket = useSocket();
-  // let typingTimer;
 
   useEffect(() => {
     if (isAuth === false) {
@@ -57,14 +56,15 @@ const ChatPage = () => {
     }
   }, [socket, chat]);
 
-  const selectChatHandler = (selectedUser, index) => {
-    setSelectedChat(selectedUser);
+  const selectChatHandler = (selUser, index) => {
+    setIsChatSelected(true);
+    setSelectedUser(selUser);
     setSelectedChatIndex(index);
     if (socket) {
       setisLoading(true);
       socket.emit("getAllChats", {
         sender_id: user?._id,
-        reciever_id: selectedUser._id,
+        reciever_id: selUser._id,
       });
     }
   };
@@ -89,44 +89,13 @@ const ChatPage = () => {
     };
   }, [dispatch, search]);
 
-  // const startTyping = () => {
-  //   console.log("typing start");
-
-  //   socket.emit("typing", {
-  //     sender_id: user?._id,
-  //     reciever_id: selectedChat?._id,
-  //   });
-  // };
-
-  // const stopTyping = () => {
-  //   console.log("typing stop");
-  //   socket.emit("stopTyping", {
-  //     sender_id: user?._id,
-  //     reciever_id: selectedChat?._id,
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   return () => {
-  //     clearTimeout(typingTimer);
-  //   };
-  // }, [typingTimer]);
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on("userTyping", function (data) {
-  //       setIsTyping(true);
-  //     });
-
-  //     socket.on("userStoppedTyping", function (data) {
-  //       setIsTyping(false);
-  //     });
-  //   }
-  // }, [socket]);
-
   return (
     <>
-      <div className="w-full h-full lg:w-[25%]  bg-[#fff] border-r border-zinc-300">
+      <div
+        className={`w-full md:w-[330px] h-full bg-[#fff] border-r border-zinc-300 ${
+          isChatSelected && "hidden md:block"
+        }`}
+      >
         <div className="px-6 pt-6 border-b border-zinc-200">
           <h4 className="mb-0 text-zinc-800">Chats</h4>
           <div className="py-3 mt-5 mb-5 rounded border border-[#e6e6e6] flex items-center">
@@ -146,24 +115,22 @@ const ChatPage = () => {
           onSelectChat={selectChatHandler}
         />
       </div>
-      {selectedChat ? (
+      {isChatSelected ? (
         <ChatContainer
-          selectedChat={selectedChat}
+          setIsChatSelected={setIsChatSelected}
+          selectedUser={selectedUser}
           loading={isloading}
           chatMessage={chatMessage}
           user={user}
-          // isTyping={isTyping}
-          // startTyping={startTyping}
-          // stopTyping={stopTyping}
         />
       ) : (
-        <div className="w-full lg:w-[70%] bg-[#fff] h-full flex flex-col items-center justify-center">
-          <img src={logo} alt="" className="mix-blend-darken w-60 h-60" />
-          <p className="text-xl mb-3 font-serif">
+        <div className="w-[calc(100%-400px)] hidden bg-[#fff] h-full md:flex md:flex-col md:items-center md:justify-center">
+          <FaFacebookMessenger className="text-5xl text-[#274BF4]" />
+          <p className="text-xl my-3 font-serif">
             Lorem ipsum dolor sit amet consectetur adipisicing elit.
             Repellendus, laborum?
           </p>
-          <p className="text-xl mb-3 font-serif text-gray-500">
+          <p className="text-xl my-3 font-serif text-gray-500">
             select chats to read messages
           </p>
         </div>

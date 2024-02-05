@@ -10,7 +10,6 @@ import EditIcon from "@mui/icons-material/Edit";
 const ChatBox = ({ selectedChat, chatMessage, loading }) => {
   const chatContainerRef = useRef(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
-  const [open, setOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
   const scrollToBottom = () => {
     const container = chatContainerRef.current;

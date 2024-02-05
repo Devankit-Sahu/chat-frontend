@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
-import backgroundImage from "../../assets/bg2.jpg";
-import logoImage from "../../assets/logo.jpeg";
 import InputBox from "../input/InputBox";
+import { FaFacebookMessenger } from "react-icons/fa6";
+import backgroundImage from "../../assets/bg.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginAction } from "../../redux/features/auth/authAction";
 import Loader from "../loader/Loader";
-import EmailIcon from "@mui/icons-material/Email";
-import LockIcon from "@mui/icons-material/Lock";
-import axios from "axios";
 
 function Login() {
   const { loading, isAuth, error } = useSelector((state) => state.auth);
@@ -23,7 +20,6 @@ function Login() {
       dispatch(loginAction({ email, password }));
     }
   };
-
   useEffect(() => {
     if (isAuth) {
       navigate("/");
@@ -32,69 +28,62 @@ function Login() {
   }, [isAuth, navigate]);
 
   return (
-    <div
-      className="bg-cover bg-center bg-no-repeat min-h-screen flex items-center justify-center"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
-      <form method="post" onSubmit={handleLogin}>
-        <div className="bg-[#fff] bg-opacity-90 rounded-lg shadow-lg w-96 p-8">
-          <img
-            src={logoImage}
-            alt="Logo"
-            className="w-20 h-20 mx-auto mix-blend-darken"
-          />
-          <h2 className="text-2xl font-bold text-center mb-6 uppercase">
-            Log in
+    <div className="h-screen w-screen flex">
+      <div
+        className="hidden sm:block sm:w-[50%] bg-cover bg-center bg-no-repeat h-full"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      ></div>
+      <div className="w-full sm:w-[50%] p-10 bg-[#ffffff50] flex items-center justify-center">
+        <form method="post" className="w-[80%]" onSubmit={handleLogin}>
+          <div className="flex justify-center items-center my-2">
+            <FaFacebookMessenger className="text-[4rem] text-[#6A21E2]" />
+          </div>
+          <h2 className="text-xl md:text-3xl font-semibold text-center mb-6 capitalize my-5">
+            Welcome to <span className="text-[#274BF4]">ChatBuddy</span>
           </h2>
-          <div className="mb-4 flex border-b-2 border-gray-400 py-1">
+          <div className="my-5">
             <InputBox
+              labelName="Email"
+              labelClassName="mb-3 text-sm"
               type="email"
               id="email"
               name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
+              placeholder="example@gmail.com"
+              className="w-full h-10 border-b-[1px] border-solid border-b-[#878484] outline-none placeholder:text-gray-600"
             />
-            <span className="flex-[.1] text-gray-600">
-              <EmailIcon />
-            </span>
           </div>
-          <div className="mb-4 flex border-b-2 border-gray-400 py-1">
+          <div className="my-5">
             <InputBox
+              labelName="Password"
+              labelClassName="mb-3 text-sm"
               type="password"
               id="password"
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="flex-[.9] bg-transparent outline-none placeholder:text-gray-600"
+              className="w-full h-10 border-b-[1px] border-solid border-b-[#878484] outline-none placeholder:text-gray-600"
             />
-            <span className="flex-[.1] text-gray-600">
-              <LockIcon />
-            </span>
           </div>
           <div className="mb-4">
             <p className="text-red-500">{error}</p>
           </div>
-          <button
-            onClick={handleLogin}
-            className="w-full bg-blue-500 text-white font-semibold mt-3 py-3 rounded hover:bg-blue-600 active:scale-[.9]"
-          >
+          <button className="w-full bg-blue-500 text-white font-semibold mt-3 py-3 rounded hover:bg-blue-600 active:scale-[.9]">
             {loading ? (
               <Loader className="border-t-2 border-t-[#fff] w-[22px] h-[22px]" />
             ) : (
-              "Log In"
+              "Sign In"
             )}
           </button>
-          <div className="mt-4 text-center text-orange-900">
+          <div className="mt-4 text-center">
             Don't have an account?{" "}
             <Link to="/signup" className="text-blue-500">
-              register
+              Sign-Up
             </Link>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

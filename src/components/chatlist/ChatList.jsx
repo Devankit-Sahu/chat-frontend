@@ -1,10 +1,9 @@
 import React from "react";
 import { Avatar } from "@mui/material";
-import Skeleton from "@mui/material/Skeleton";
 
 const ChatList = ({ users, selectedChatIndex, onSelectChat }) => {
   return (
-    <ul className="flex flex-col">
+    <ul className="flex flex-col px-5 md:px-0">
       {users?.map((user, index) => (
         <li
           onClick={() => onSelectChat(user, index)}

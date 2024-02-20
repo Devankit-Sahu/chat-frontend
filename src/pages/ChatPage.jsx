@@ -15,7 +15,6 @@ const ChatPage = () => {
   const user = useSelector((state) => state.currUser.user);
   const { users } = useSelector((state) => state.alluser);
   const { searchedUsers } = useSelector((state) => state.searchUser);
-  const { chat } = useSelector((state) => state.sendMessage);
   const [isChatSelected, setIsChatSelected] = useState(false);
   const [selectedUser, setSelectedUser] = useState({});
   const [selectedChatIndex, setSelectedChatIndex] = useState(null);
@@ -43,18 +42,6 @@ const ChatPage = () => {
       });
     }
   }, [socket, dispatch]);
-
-  useEffect(() => {
-    if (socket) {
-      if (chat) {
-        setChatMessage((prevChatMessages) => [...prevChatMessages, chat]);
-        socket.emit("newMessage", chat);
-      }
-      socket.on("receiveMessage", function (data) {
-        setChatMessage((prevChatMessages) => [...prevChatMessages, data]);
-      });
-    }
-  }, [socket, chat]);
 
   const selectChatHandler = (selUser, index) => {
     setIsChatSelected(true);
@@ -121,6 +108,7 @@ const ChatPage = () => {
           selectedUser={selectedUser}
           loading={isloading}
           chatMessage={chatMessage}
+          setChatMessage={setChatMessage}
           user={user}
         />
       ) : (

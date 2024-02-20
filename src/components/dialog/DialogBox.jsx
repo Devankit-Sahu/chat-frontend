@@ -1,14 +1,13 @@
 import React from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Slide from "@mui/material/Slide";
-import SentimentSatisfiedAltOutlinedIcon from "@mui/icons-material/SentimentSatisfiedAltOutlined";
-import SendIcon from "@mui/icons-material/Send";
-import InputBox from "../input/InputBox";
+import {
+  Slide,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -17,11 +16,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const DialogBox = ({
   open,
   handleClose,
-  // handleCloseFileChange,
-  title,
-  contentText,
-  actionText1,
-  actionText2,
+  dialogtitle,
+  dialogcontentText,
+  dialogactionText1,
+  dialogactionText2,
+  dialogactionOnSuccess,
 }) => {
   return (
     <Dialog
@@ -31,28 +30,25 @@ const DialogBox = ({
       onClose={handleClose}
       aria-describedby="alert-dialog-slide-description"
     >
-      {title && <DialogTitle sx={{ fontWeight: 600 }}>{title}</DialogTitle>}
-      {contentText && (
+      {dialogtitle && (
+        <DialogTitle sx={{ fontWeight: 600 }}>{dialogtitle}</DialogTitle>
+      )}
+      {dialogcontentText && (
         <DialogContent>
           <DialogContentText
             sx={{ color: "black" }}
             id="alert-dialog-slide-description"
           >
-            {contentText}
+            {dialogcontentText}
           </DialogContentText>
         </DialogContent>
       )}
-      <DialogActions sx={{ justifyContent: "center", gap: "20px" }}>
-        <Button
-          variant="contained"
-          color="success"
-          onClick={handleCloseFileChange}
-          // onClick={handleCloseFileChange}
-        >
-          {actionText1}
+      <DialogActions>
+        <Button color="error" onClick={handleClose}>
+          {dialogactionText1}
         </Button>
-        <Button variant="contained" color="primary" onClick={handleClose}>
-          {actionText2}
+        <Button color="success" onClick={dialogactionOnSuccess}>
+          {dialogactionText2}
         </Button>
       </DialogActions>
     </Dialog>

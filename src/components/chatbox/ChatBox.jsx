@@ -1,16 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { Avatar, Divider, IconButton, Tooltip } from "@mui/material";
+import { Avatar, Divider, IconButton } from "@mui/material";
 import Loader from "../loader/Loader";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { useSelector } from "react-redux";
+import DialogBox from "../dialog/DialogBox";
 
 const ChatBox = ({ selectedChat, chatMessage, loading }) => {
+  const user = useSelector((state) => state.currUser.user);
   const chatContainerRef = useRef(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const scrollToBottom = () => {
     const container = chatContainerRef.current;
     if (container) {
@@ -85,6 +98,10 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
     return messageDate.toDateString();
   };
 
+  const deleteChatHandler = (chatId) => {
+    handleClickOpen();
+    console.log(chatId);
+  };
   return (
     <div className="relative h-[80vh] w-full overflow-hidden bg-[#fff]">
       {loading ? (
@@ -121,29 +138,27 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
               : null;
 
             return (
-              <div key={index}>
+              <div key={index} className="relative">
                 {index === 0 || currentDate !== prevDate ? (
                   <Divider className="w-full">{currentDate}</Divider>
                 ) : null}
                 <div
                   className={`p-4 max-w-[60%] flex items-start gap-2 cursor-pointer ${
-                    selectedChat?._id !== chat?.sender_id
+                    user?._id === chat?.sender_id
                       ? "ml-auto justify-end"
                       : "mr-auto"
                   }`}
                 >
                   <div
                     className={`${
-                      selectedChat?._id !== chat?.sender_id
-                        ? "hidden"
-                        : "visible"
+                      user?._id === chat?.sender_id ? "hidden" : "visible"
                     }`}
                   >
                     <Avatar sx={{ height: "30px", width: "30px" }} />
                   </div>
                   <div
                     className={`relative max-w-[90%] text-white rounded-lg  ${
-                      selectedChat?._id !== chat?.sender_id
+                      user?._id !== chat?.sender_id
                         ? "bg-[rgb(114,105,239)] rounded-tr-none"
                         : "bg-[rgb(88,195,238)] rounded-tl-none"
                     } py-[10px] px-[8px]`}
@@ -175,30 +190,44 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
                     </p>
                     <div
                       className={`absolute z-[10] border-[5px] border-transparent ${
-                        selectedChat?._id !== chat?.sender_id
+                        user?._id !== chat?.sender_id
                           ? "top-0 right-[-8px] border-t-[rgb(114,105,239)] border-l-[rgb(114,105,239)]"
                           : "top-0 left-[-8px] border-t-[rgb(88,195,238)] border-r-[rgb(88,195,238)]"
                       } `}
                     ></div>
                   </div>
                   <div
-                    className="relative"
+                    className={`flex ${
+                      user?._id === chat?.sender_id ? "order-first" : "order-1"
+                    }`}
                     id={index}
-                    onClick={() => handleMoreVertClick(index)}
                   >
-                    <MoreVertIcon sx={{ fontSize: "20px" }} />
+                    <span
+                      className={`${
+                        user?._id === chat?.sender_id
+                          ? "order-1"
+                          : "order-first"
+                      }`}
+                      onClick={() => handleMoreVertClick(index)}
+                    >
+                      <MoreVertIcon sx={{ fontSize: "20px" }} />
+                    </span>
                     <div
                       className={`${
-                        openIndex === index
-                          ? "bg-[#eeecec] p-2 absolute top-[-25px] left-[19px]"
-                          : "hidden"
+                        openIndex === index ? "bg-[#eeecec]" : "hidden"
                       }`}
+                      onClick={() => handleMoreVertClick(index)}
                     >
-                      <div className="mb-2">
+                      <div
+                        onClick={(e) => deleteChatHandler(chat?._id)}
+                        className="p-2 flex justify-between items-center gap-3 hover:bg-[#c6c6c9]"
+                      >
+                        <p>Delete</p>
                         <DeleteIcon sx={{ fontSize: "17px" }} />
                       </div>
-                      <Divider />
-                      <div className="mt-2">
+                      {/* <Divider /> */}
+                      <div className="p-2 flex justify-between items-center gap-3 hover:bg-[#c6c6c9]">
+                        <p>Edit</p>
                         <EditIcon sx={{ fontSize: "17px" }} />
                       </div>
                     </div>
@@ -207,6 +236,14 @@ const ChatBox = ({ selectedChat, chatMessage, loading }) => {
               </div>
             );
           })}
+          <DialogBox
+            open={open}
+            handleClose={handleClose}
+            dialogtitle="Are you sure you want to delete this message?"
+            dialogcontentText="This action can't be undone"
+            dialogactionText1="Cancel"
+            dialogactionText2="Delete"
+          />
         </div>
       )}
     </div>

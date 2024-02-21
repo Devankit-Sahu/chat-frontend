@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaFacebookMessenger } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  changeAvatarAction,
-  currentUserDetailsAction,
-  logoutAction,
-} from "../../redux/features/auth/authAction";
+import { logoutAction } from "../../redux/features/auth/authAction";
 import { useNavigate } from "react-router-dom";
-import { Avatar, Tooltip } from "@mui/material";
+import { Avatar } from "@mui/material";
 import { Link } from "react-router-dom";
 import Profile from "../profile/Profile";
 
 const Sidebar = ({ socket }) => {
   const isAuth = JSON.parse(localStorage.getItem("isAuthenticated"));
   const user = useSelector((state) => state.currUser.user);
-  const { message, loading, error } = useSelector((state) => state.changeAvt);
   const [toggleDropdown, setToggleDropdown] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
-  const [avatar, setAvatar] = useState(null);
-  const [about, setAbout] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -33,24 +26,6 @@ const Sidebar = ({ socket }) => {
       navigate("/login");
     }
   };
-
-  const updateAboutHandler = async () => {};
-  const updateAvatarHandler = async () => {
-    dispatch(changeAvatarAction({ avatar }));
-  };
-
-  const handleFileChange = (e) => {
-    setAvatar(e.target.files[0]);
-  };
-
-  useEffect(() => {
-    if (user) {
-      setAbout(user.about);
-    }
-    if (message) {
-      dispatch(currentUserDetailsAction());
-    }
-  }, [user]);
 
   return (
     <div className="w-full fixed bottom-0 h-12 flex flex-row justify-between border-t-[1px] border-solid border-t-gray-300 sm:relative sm:w-[70px] sm:h-full sm:flex-col sm:border-r-[1px] sm:border-solid sm:border-r-gray-300">
@@ -101,13 +76,8 @@ const Sidebar = ({ socket }) => {
           showProfile={showProfile}
           setShowProfile={setShowProfile}
           user={user}
-          handleFileChange={handleFileChange}
           isEditable={isEditable}
           setIsEditable={setIsEditable}
-          about={about}
-          updateAboutHandler={updateAboutHandler}
-          avatar={avatar}
-          updateAvatarHandler={updateAvatarHandler}
         />
       )}
     </div>

@@ -1,32 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { changeAboutAction, changeAvatarAction } from "./authAction";
+import { changeDetailsAction, changeAvatarAction } from "./authAction";
 
 const initialState = {
+  isChanged: false,
   error: null,
   message: null,
   loading: false,
 };
 
-export const changeAboutSlice = createSlice({
+export const changeDetailsSlice = createSlice({
   name: "changeAbout",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(changeAboutAction.pending, (state, action) => {
+    builder.addCase(changeDetailsAction.pending, (state, action) => {
       state.loading = true;
     });
-    builder.addCase(changeAboutAction.fulfilled, (state, action) => {
+    builder.addCase(changeDetailsAction.fulfilled, (state, action) => {
       state.loading = false;
       state.message = action.payload;
+      state.isChanged = true;
     });
-    builder.addCase(changeAboutAction.rejected, (state, action) => {
+    builder.addCase(changeDetailsAction.rejected, (state, action) => {
       state.loading = false;
       state.message = null;
       state.error = action.payload;
+      state.isChanged = false;
     });
   },
 });
 
-export const changeAboutReducer = changeAboutSlice.reducer;
+export const changeDetailsReducer = changeDetailsSlice.reducer;
 
 const initialState1 = {
   error: null,

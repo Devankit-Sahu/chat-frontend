@@ -1,21 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
-import { Alert, Button, Tooltip } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  changeDetailsAction,
+  currentUserDetailsAction,
+} from "../../redux/features/auth/authAction";
 
 const Profile = ({
   showProfile,
   setShowProfile,
   user,
-  handleFileChange,
   isEditable,
   setIsEditable,
-  about,
-  updateAboutHandler,
-  avatar,
-  updateAvatarHandler,
 }) => {
+  const { isChanged } = useSelector((state) => state.changeDetails);
+  const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState(null);
+  const [about, setAbout] = useState("");
+  const dispatch = useDispatch();
+
+  const updateDetailsHandler = async () => {
+    dispatch(changeDetailsAction({ about, username }));
+  };
+
+  const handleFileChange = (e) => {
+    setAvatar(e.target.files[0]);
+  };
+
+  useEffect(() => {
+    if (isChanged) {
+      dispatch(currentUserDetailsAction());
+      setIsEditable(false);
+    }
+  }, [dispatch, isChanged]);
+
+  useEffect(() => {
+    if (user) {
+      setAbout(user.about);
+      setUsername(user.username);
+    }
+  }, [user]);
+
   return (
     <div
       className={`absolute top-0 z-10 h-full w-screen transition-all duration-300 ease-in-out bg-[rgba(0,0,0,0.2)] ${
@@ -25,7 +53,7 @@ const Profile = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-[25%] bg-white h-full"
+        className="w-full md:w-[350px] bg-white h-full"
       >
         <div className="flex justify-between p-5 relative">
           <h1 className="text-2xl font-bold">Profile</h1>
@@ -63,23 +91,24 @@ const Profile = ({
                 onChange={handleFileChange}
               />
             </div>
-            <p className="text-center mt-5 capitalize text-green-400 text-xl font-semibold">
-              {user?.username}
-            </p>
+            <input
+              disabled={isEditable ? false : true}
+              className={`text-center mt-5 capitalize text-green-400 text-xl font-semibold outline-none ${
+                isEditable
+                  ? "border-[1px] border-solid border-green-400"
+                  : "border-none"
+              }`}
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
           </div>
           <div className="about mt-3">
             <h6 className="mb-2">Email</h6>
             <p className="text-[#6c757d]">{user?.email}</p>
           </div>
           <div className="about mt-3">
-            <div className="flex justify-between">
-              <h6 className="mb-2">About</h6>
-              <span onClick={() => setIsEditable((prev) => !prev)}>
-                <CreateOutlinedIcon
-                  sx={{ color: "#6c757d", cursor: "pointer" }}
-                />
-              </span>
-            </div>
+            <h6 className="mb-2">About</h6>
             <textarea
               type="text"
               value={about}
@@ -87,47 +116,44 @@ const Profile = ({
               rows="4"
               onChange={(e) => setAbout(e.target.value)}
               placeholder="write your about here..."
-              className="text-[#6c757d] w-full outline-none border-none"
+              className={`text-[#6c757d] w-full outline-none ${
+                isEditable
+                  ? "border-[1px] border-solid border-green-400"
+                  : "border-none"
+              }`}
             />
           </div>
-          {isEditable && (
-            <div className="mt-10 flex items-center justify-center gap-x-5">
+          {isEditable ? (
+            <>
               <Button
-                color="error"
-                variant="outlined"
-                onClick={() => setIsEditable(false)}
-              >
-                cancel
-              </Button>
-              <Button
+                onClick={updateDetailsHandler}
                 color="success"
-                variant="contained"
-                onClick={updateAboutHandler}
+                variant="outlined"
               >
                 update
               </Button>
-            </div>
-          )}
-          {avatar && (
-            <div className="mt-10 flex items-center justify-center gap-x-5">
               <Button
-                color="error"
+                onClick={() => {
+                  setIsEditable(false);
+                  setUsername(user.username);
+                  setAbout(user.about);
+                }}
+                color="success"
                 variant="outlined"
-                onClick={() => setIsEditable(false)}
               >
                 cancel
               </Button>
-              <Button
-                color="success"
-                variant="contained"
-                onClick={updateAvatarHandler}
-              >
-                update avatar
-              </Button>
-            </div>
+            </>
+          ) : (
+            <Button
+              color="success"
+              variant="outlined"
+              onClick={() => setIsEditable(true)}
+            >
+              Edit Details
+            </Button>
           )}
         </div>
-        <Alert className="absolute bottom-0 w-[25%]" severity="error"></Alert>
       </div>
     </div>
   );

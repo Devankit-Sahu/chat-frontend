@@ -9,6 +9,7 @@ import ChangePassword from "./changepassword/ChangePassword";
 import ChatContainer from "./chatcontainer/ChatContainer";
 import ChatList from "./chatlist/ChatList";
 import DialogBox from "./dialog/DialogBox";
+import ChatHeader from "./chatheader/ChatHeader";
 
 export {
   Login,
@@ -22,4 +23,5 @@ export {
   ChatContainer,
   ChatList,
   DialogBox,
+  ChatHeader,
 };

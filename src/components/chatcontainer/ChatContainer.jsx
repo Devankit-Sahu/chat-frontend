@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { ChatBox, InputBox } from "../";
-import SendIcon from "@mui/icons-material/Send";
-import { useDispatch, useSelector } from "react-redux";
+import { ChatBox, InputBox, ChatHeader } from "../";
 import {
+  allChatsAction,
   deleteChatsAction,
   sendMessageAction,
-} from "../../redux/features/chat/sendMessageAction";
+} from "../../redux/features/chat/chatAction";
 import { useSocket } from "../../context/socketContext";
-import ChatHeader from "../chatheader/ChatHeader";
+import { useDispatch, useSelector } from "react-redux";
+import SendIcon from "@mui/icons-material/Send";
+import { useNavigate } from "react-router-dom";
 
 const ChatContainer = ({
   setIsChatSelected,
@@ -17,9 +18,20 @@ const ChatContainer = ({
   setChatMessage,
   user,
 }) => {
+  const { isChatDeleted } = useSelector((state) => state.delChats);
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   const socket = useSocket();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const messageChangeHandler = (e) => {
     setMessage(e.target.value);
@@ -43,21 +55,39 @@ const ChatContainer = ({
     }
   };
 
+  const deleteChatHandler = () => {
+    dispatch(
+      deleteChatsAction({
+        sender_id: user?._id,
+        reciever_id: selectedUser?._id,
+      })
+    );
+    handleClose();
+  };
+
   useEffect(() => {
     if (socket) {
       socket.on("receiveMessage", function (data) {
-        console.log(data);
         setChatMessage((prevChatMessages) => [...prevChatMessages, data]);
       });
     }
   }, [socket]);
+
+  useEffect(() => {
+    if (isChatDeleted) {
+      navigate("/");
+    }
+  }, [isChatDeleted, navigate]);
 
   return (
     <div className="w-full md:w-[calc(100%-400px)] h-full relative">
       <ChatHeader
         selectedUser={selectedUser}
         setIsChatSelected={setIsChatSelected}
-        user={user}
+        deleteChatHandler={deleteChatHandler}
+        open={open}
+        handleClickOpen={handleClickOpen}
+        handleClose={handleClose}
       />
       <ChatBox
         selectedUser={selectedUser}

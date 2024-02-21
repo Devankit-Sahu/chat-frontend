@@ -141,13 +141,13 @@ export const changePasswordAction = createAsyncThunk(
   }
 );
 // change about action
-export const changeAboutAction = createAsyncThunk(
+export const changeDetailsAction = createAsyncThunk(
   "auth/changeAbout",
-  async ({ about }, { rejectWithValue }) => {
+  async ({ about, username }, { rejectWithValue }) => {
     try {
       const { data } = await axios.patch(
-        "/api/v1/users/update/about",
-        { about },
+        "/api/v1/users/update/details",
+        { about, username },
         {
           headers: {
             "Content-Type": "application/json",
@@ -190,6 +190,3 @@ export const changeAvatarAction = createAsyncThunk(
     }
   }
 );
-
-
-

@@ -7,13 +7,13 @@ import {
   sendMessageReducer,
   deleteChatsReducer,
   deleteSingleChatReducer,
-} from "./features/chat/sendMessageSlice";
+} from "./features/chat/chatSlice";
 import searchUserReducer from "./features/auth/searchUserSlice";
 import changePasswordReducer from "./features/auth/changePasswordSlice";
 import {
-  changeAboutReducer,
+  changeDetailsReducer,
   changeAvatarReducer,
-} from "./features/auth/changeAvatarSlice";
+} from "./features/auth/changeDetailsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -24,11 +24,9 @@ export const store = configureStore({
     sendMessage: sendMessageReducer,
     searchUser: searchUserReducer,
     changePass: changePasswordReducer,
-    changeAbout: changeAboutReducer,
+    changeDetails: changeDetailsReducer,
     changeAvt: changeAvatarReducer,
     delChats: deleteChatsReducer,
     delSingleChat: deleteSingleChatReducer,
-    // addAtt: addAttachmentReducer,
   },
 });
-  

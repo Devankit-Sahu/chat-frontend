@@ -1,33 +1,17 @@
 import React, { useState } from "react";
-import { KeyboardArrowLeftOutlined, SearchOutlined } from "@mui/icons-material";
-import { Avatar, Tooltip } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { useDispatch } from "react-redux";
 import DialogBox from "../dialog/DialogBox";
-import { deleteChatsAction } from "../../redux/features/chat/sendMessageAction";
+import { Avatar, Tooltip } from "@mui/material";
+import { KeyboardArrowLeftOutlined, SearchOutlined } from "@mui/icons-material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const ChatHeader = ({ selectedUser, setIsChatSelected, user }) => {
-  const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const deleteChatHandler = () => {
-    dispatch(
-      deleteChatsAction({
-        sender_id: user?._id,
-        reciever_id: selectedUser?._id,
-      })
-    );
-    handleClose();
-  };
-
+const ChatHeader = ({
+  selectedUser,
+  setIsChatSelected,
+  deleteChatHandler,
+  open,
+  handleClickOpen,
+  handleClose,
+}) => {
   return (
     <>
       <div className="p-4 border-b border-[#e6e6e6] lg:py-4 lg:px-6 bg-[#fff]">

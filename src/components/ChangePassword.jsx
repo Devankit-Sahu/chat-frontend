@@ -1,13 +1,11 @@
 import React, { useRef, useState } from "react";
-import InputBox from "../input/InputBox";
+import InputBox from "./InputBox";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { IoArrowBackOutline } from "react-icons/io5";
 import { Alert, Button, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { changePasswordAction } from "../../redux/features/auth/authAction";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../loader/Loader";
+import Loader from "./Loader";
 
 const ChangePassword = () => {
   const { loading, message, error } = useSelector((state) => state.changePass);

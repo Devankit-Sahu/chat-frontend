@@ -14,20 +14,8 @@ body {
   height: 100%;
 }
 
-.message-arrow::after {
-  left: 0;
-  z-index: 100000;
-  content: "";
-  position: absolute;
-  bottom: -9px;
-  border-width: 5px;
-  border-color: transparent;
-  border-top-color: rgb(114, 105, 239);
-  border-left-color: rgb(114, 106, 239);
-}
-
 .loader {
-  animation: spin 1s linear infinite; 
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -39,13 +27,38 @@ body {
   }
 }
 
-.down-arrow::after {
-  position: absolute;
-  content: "";
-  bottom: -10px; 
-  width: 0;
-  height: 0;
-  border-left: 10px;
-  border-right: 10px solid transparent; 
-  border-top: 10px solid rgb(82, 82, 81); 
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(60, 176, 205);
+  border-radius: 4px;
+}
+
+.typing-indicator {
+  display: inline-flex;
+  align-items: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: #969494;
+  border-radius: 50%;
+  margin-right: 4px;
+  animation: blink 1s infinite alternate;
+}
+
+@keyframes blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
 }

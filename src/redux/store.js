@@ -1,32 +1,40 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./features/auth/authSlice";
-import currentUserReducer from "./features/auth/currentUserSlice";
-import alluserReducer from "./features/auth/alluserSlice";
-import chatReducer from "./features/chat/chatSlice";
 import {
+  allMyFriendsReducer,
+  currentUserReducer,
+  sendRequestReducer,
+  acceptRequestReducer,
+  searchUserReducer,
+} from "./features/user/userSlice";
+import {
+  addMembersToGroupChatReducer,
+  deleteAllMessagesReducer,
+  getAllMessagesReducer,
+  getChatsReducer,
+  leaveGroupChatReducer,
+  newGroupReducer,
+  removeMembersFromGroupChatReducer,
+  searchChatReducer,
   sendMessageReducer,
-  deleteChatsReducer,
-  deleteSingleChatReducer,
 } from "./features/chat/chatSlice";
-import searchUserReducer from "./features/auth/searchUserSlice";
-import changePasswordReducer from "./features/auth/changePasswordSlice";
-import {
-  changeDetailsReducer,
-  changeAvatarReducer,
-} from "./features/auth/changeDetailsSlice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    allMyFriends: allMyFriendsReducer,
     currUser: currentUserReducer,
-    alluser: alluserReducer,
-    chat: chatReducer,
-    sendMessage: sendMessageReducer,
+    sendReq: sendRequestReducer,
+    acceptReq: acceptRequestReducer,
     searchUser: searchUserReducer,
-    changePass: changePasswordReducer,
-    changeDetails: changeDetailsReducer,
-    changeAvt: changeAvatarReducer,
-    delChats: deleteChatsReducer,
-    delSingleChat: deleteSingleChatReducer,
+    newGroup: newGroupReducer,
+    addMembers: addMembersToGroupChatReducer,
+    removeMembers: removeMembersFromGroupChatReducer,
+    leaveGroup: leaveGroupChatReducer,
+    chats: getChatsReducer,
+    searchChat: searchChatReducer,
+    newMessage: sendMessageReducer,
+    allMessages: getAllMessagesReducer,
+    delMessages: deleteAllMessagesReducer,
   },
 });

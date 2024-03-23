@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import InputBox from "../input/InputBox";
-import backgroundImage from "../../assets/bg.jpg";
-import { FaFacebookMessenger } from "react-icons/fa6";
+import { InputBox, Loader } from "./";
+import backgroundImage from "../assets/bg.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { registerAction } from "../../redux/features/auth/authAction";
-import { Avatar } from "@mui/material";
-import Loader from "../loader/Loader";
+import { registerAction } from "../redux/features/auth/authAction";
+import { Alert, Avatar, Box, Stack } from "@mui/material";
+import {
+  EmailOutlined as EmailOutlinedIcon,
+  LockOutlined as LockOutlinedIcon,
+  AccountCircleOutlined as AccountCircleOutlinedIcon,
+} from "@mui/icons-material";
 
 function Signup() {
-  const { isAuth, loading } = useSelector((state) => state.auth);
+  const { isAuth, isLoading, isError } = useSelector((state) => state.auth);
   const [user, setUser] = useState({
     username: "",
     email: "",
@@ -17,15 +20,17 @@ function Signup() {
     avatar: null,
   });
   const [imagePreview, setImagePreview] = useState(null);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleChange = (e) => {
+  const handleUserChange = (e) => {
     setUser({
       ...user,
       [e.target.name]: e.target.value,
     });
   };
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
 
@@ -57,30 +62,38 @@ function Signup() {
       dispatch(registerAction(userData));
     }
   };
+
   useEffect(() => {
     if (isAuth) {
       localStorage.setItem("isAuth", JSON.stringify(isAuth));
-      navigate("/dashboard");
+      navigate("/");
     }
-  }, [isAuth]);
+    if (isError) {
+      setError(isError);
+    }
+  }, [isAuth, navigate, isError]);
 
   return (
-    <div className="h-screen w-screen flex">
-      <div
-        className="hidden sm:block sm:w-[50%] bg-cover bg-center bg-no-repeat h-full"
+    <Stack direction={"row"} height={"100vh"} width={"100vw"}>
+      <Box
+        className="hidden sm:block sm:w-[50vw] bg-cover bg-center bg-no-repeat h-full"
         style={{ backgroundImage: `url(${backgroundImage})` }}
-      ></div>
-      <div className="w-full sm:w-[50%] bg-[#ffffff50] flex items-center justify-center">
-        <form method="post" className="w-[80%]" onSubmit={handleSignup}>
-          <div className="flex justify-center items-center my-2">
-            <FaFacebookMessenger className="text-[4rem] text-[#6A21E2]" />
-          </div>
-          <h2 className="text-xl text-[#274BF4] md:text-3xl font-semibold text-center mb-6 capitalize my-5">
-            create an account
-          </h2>
+      ></Box>
+      <Stack
+        alignItems={"center"}
+        className="w-full sm:w-[50%]"
+        bgcolor={"white"}
+        padding={"40px"}
+      >
+        <h2 className="text-3xl font-bold text-center mb-6 my-5">
+          Sign up<span className="text-[#274BF4]">.</span>
+        </h2>
+        {error && <Alert severity="error">{error}</Alert>}
+        <form method="post" className="w-[80%] mt-14" onSubmit={handleSignup}>
           <div className="flex justify-center">
             <label htmlFor="avatar">
               <Avatar
+                className="cursor-pointer"
                 src={imagePreview || ""}
                 sx={{ width: "80px", height: "80px" }}
               />
@@ -93,61 +106,74 @@ function Signup() {
               className="hidden"
             />
           </div>
-          <div className="my-5">
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            gap={1}
+            className="my-5 border-b-[1px] border-solid border-b-[#878484]"
+          >
+            <AccountCircleOutlinedIcon className="text-gray-500" />
             <InputBox
-              labelName="Username"
-              labelClassName="mb-3 text-sm"
               type="text"
               id="username"
               name="username"
               value={user.username}
-              onChange={handleChange}
+              onChange={handleUserChange}
               placeholder="username"
-              className="w-full h-10 border-b-[1px] border-solid border-b-[#878484] outline-none placeholder:text-gray-600"
+              className="w-full h-10 outline-none placeholder:text-gray-600"
             />
-          </div>
-          <div className="my-5">
+          </Stack>
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            gap={1}
+            className="my-5 border-b-[1px] border-solid border-b-[#878484]"
+          >
+            <EmailOutlinedIcon className="text-gray-500" />
             <InputBox
-              labelName="Email"
-              labelClassName="mb-3 text-sm"
               type="email"
               id="email"
               name="email"
               value={user.email}
-              onChange={handleChange}
+              onChange={handleUserChange}
               placeholder="example@gmail.com"
-              className="w-full h-10 border-b-[1px] border-solid border-b-[#878484] outline-none placeholder:text-gray-600"
+              className="w-full h-10 outline-none placeholder:text-gray-600"
             />
-          </div>
-          <div className="my-5">
+          </Stack>
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            gap={1}
+            className="my-5 border-b-[1px] border-solid border-b-[#878484]"
+          >
+            <LockOutlinedIcon className="text-gray-500" />
             <InputBox
-              labelName="Password"
-              labelClassName="mb-3 text-sm"
               type="password"
               id="password"
               name="password"
               value={user.password}
-              onChange={handleChange}
+              onChange={handleUserChange}
+              autoComplete="off"
               placeholder="Enter your password"
-              className="w-full h-10 border-b-[1px] border-solid border-b-[#878484] outline-none placeholder:text-gray-600"
+              className="w-full h-10 outline-none placeholder:text-gray-600"
             />
-          </div>
+          </Stack>
           <button className="w-full bg-blue-500 text-white font-semibold py-3 rounded hover:bg-blue-600 active:scale-[.9]">
-            {loading ? (
+            {isLoading ? (
               <Loader className="border-t-2 border-t-[#fff] w-[22px] h-[22px]" />
             ) : (
               "Sign Up"
             )}
           </button>
-          <div className="mt-4 text-center">
+          <Box marginTop={2}>
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-500">
+            <Link to="/login" className="text-cyan-500 underline">
               Sign In
             </Link>
-          </div>
+          </Box>
         </form>
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 }
 

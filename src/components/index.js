@@ -1,15 +1,22 @@
-import Login from "./login/Login";
-import Signup from "./signup/Signup";
-import ChatBox from "./chatbox/ChatBox";
-import Sidebar from "./sidebar/Sidebar";
-import Loader from "./loader/Loader";
-import Layout from "./layout/Layout";
-import InputBox from "./input/InputBox";
-import ChangePassword from "./changepassword/ChangePassword";
-import ChatContainer from "./chatcontainer/ChatContainer";
-import ChatList from "./chatlist/ChatList";
-import DialogBox from "./dialog/DialogBox";
-import ChatHeader from "./chatheader/ChatHeader";
+import Login from "./Login";
+import Signup from "./Signup";
+import ChatBox from "./ChatBox";
+import Sidebar from "./Sidebar";
+import Loader from "./Loader";
+import Layout from "./Layout";
+import InputBox from "./InputBox";
+import ChangePassword from "./ChangePassword";
+import ChatContainer from "./ChatContainer";
+import ChatList from "./ChatList";
+import DialogBox from "./DialogBox";
+import ChatHeader from "./ChatHeader";
+import ChatSidebar from "./ChatSidebar";
+import Profile from "./Profile";
+import LayoutLoader from "./LayoutLoader";
+import Notification from "./Notification";
+import Search from "./Search";
+import NewGroup from "./NewGroup";
+import NewContact from "./NewContact";
 
 export {
   Login,
@@ -24,4 +31,11 @@ export {
   ChatList,
   DialogBox,
   ChatHeader,
+  ChatSidebar,
+  Profile,
+  LayoutLoader,
+  Notification,
+  Search,
+  NewGroup,
+  NewContact,
 };

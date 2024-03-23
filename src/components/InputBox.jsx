@@ -3,7 +3,7 @@ import React, { forwardRef } from "react";
 const InputBox = forwardRef((props, ref) => {
   const {
     labelName,
-    labelClassName = "hidden",
+    labelClassName = "",
     type = "text",
     id,
     name,
@@ -15,9 +15,11 @@ const InputBox = forwardRef((props, ref) => {
   } = props;
   return (
     <>
-      <label htmlFor={id} className={labelClassName}>
-        {labelName}
-      </label>
+      {labelName && (
+        <label htmlFor={id} className={labelClassName}>
+          {labelName}
+        </label>
+      )}
       <input
         ref={ref}
         type={type}

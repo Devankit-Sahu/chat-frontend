@@ -1,20 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../../config/axios-config";
 
-export const allChatsAction = createAsyncThunk(
-  "chat/allChats",
-  async ({ sender_id, reciever_id }, { rejectWithValue }) => {
+export const newGroupChatAction = createAsyncThunk(
+  "chat/newGroupChat",
+  async ({ name, members, profile="" }, { rejectWithValue }) => {
     try {
-      const { data } = await axios.get(
-        `/api/v1/chats/chats/sender=${sender_id}/reciever=${reciever_id}`,
-        { sender_id, reciever_id },
+      const { data } = await axios.post(
+        "/api/v1/chat/new-group",
+        { name, members, profile },
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
         }
       );
-      return data.chats;
+      return data.message;
     } catch (error) {
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
@@ -27,18 +27,61 @@ export const allChatsAction = createAsyncThunk(
 
 export const sendMessageAction = createAsyncThunk(
   "chat/sendMessage",
-  async ({ message, sender_id, reciever_id }, { rejectWithValue }) => {
+  async ({ chatId, files }, { rejectWithValue }) => {
     try {
       const { data } = await axios.post(
-        "/api/v1/chats/message",
-        { message, sender_id, reciever_id },
+        "/api/v1/chat/message",
+        { chatId, files },
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return data.message;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const getChatsAction = createAsyncThunk(
+  "chat/getChats",
+  async (arg, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get("/api/v1/chat/allchats");
+      return data.chats;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const addMembersToGroupChatAction = createAsyncThunk(
+  "chat/addMembersToGroup",
+  async ({ chatId, members }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.put(
+        "/api/v1/chat/add-members",
+        {
+          chatId,
+          members,
+        },
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-      return data.chat;
+      return data.message;
     } catch (error) {
       if (error.response && error.response.data.message) {
         return rejectWithValue(error.response.data.message);
@@ -49,12 +92,21 @@ export const sendMessageAction = createAsyncThunk(
   }
 );
 
-export const deleteChatsAction = createAsyncThunk(
-  "chat/deleteChats",
-  async ({ sender_id, reciever_id }, { rejectWithValue }) => {
+export const removeMembersFromGroupChatAction = createAsyncThunk(
+  "chat/removeMembersFromGroup",
+  async ({ chatId, userId }, { rejectWithValue }) => {
     try {
-      const { data } = await axios.delete(
-        `/api/v1/chats/delete/sender=${sender_id}/reciever=${reciever_id}`
+      const { data } = await axios.put(
+        "/api/v1/chat/remove-member",
+        {
+          chatId,
+          userId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       return data.message;
     } catch (error) {
@@ -67,12 +119,20 @@ export const deleteChatsAction = createAsyncThunk(
   }
 );
 
-export const deleteSingleChatAction = createAsyncThunk(
-  "chat/deleteSingleChat",
-  async ({ chat_id }, { rejectWithValue }) => {
+export const leaveGroupChatAction = createAsyncThunk(
+  "chat/leaveGroup",
+  async ({ chatId }, { rejectWithValue }) => {
     try {
-      const { data } = await axios.delete(
-        `/api/v1/chats/delete/chat-id=${chat_id}`
+      const { data } = await axios.put(
+        "/api/v1/chat/leave-group",
+        {
+          chatId,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       return data.message;
     } catch (error) {
@@ -85,3 +145,60 @@ export const deleteSingleChatAction = createAsyncThunk(
   }
 );
 
+export const searchChatAction = createAsyncThunk(
+  "chat/searchChat",
+  async ({ name }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(
+        "/api/v1/chat/search",
+        {
+          name,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return data.searchedChat;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const getAllMessagesAction = createAsyncThunk(
+  "chat/getAllMessages",
+  async ({ chatId }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`/api/v1/chat/${chatId}`);
+      return data.messages;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);
+
+export const deleteAllMessagesAction = createAsyncThunk(
+  "chat/deleteAllMessages",
+  async ({ chatId }, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.delete(`/api/v1/chat/${chatId}`);
+      return data.message;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        return rejectWithValue(error.response.data.message);
+      } else {
+        return rejectWithValue(error.message);
+      }
+    }
+  }
+);

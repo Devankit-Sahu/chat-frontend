@@ -1,21 +1,32 @@
 import React, { lazy, useEffect, useState } from "react";
 const NewGroup = lazy(() => import("./NewGroup"));
 const NewContact = lazy(() => import("./NewContact"));
-import { ChatList, Search } from ".";
-import { Box, Stack, Tooltip } from "@mui/material";
+import { Search } from ".";
+import { Box, Skeleton, Stack, Tooltip, useMediaQuery } from "@mui/material";
 import {
   EditNoteOutlined as EditNoteOutlinedIcon,
   GroupOutlined as GroupOutlinedIcon,
 } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
-import { searchUserAction } from "../redux/features/user/userActions";
+import ChatListItem from "./ChatListItem";
 
-const ChatSidebar = ({ isMobile, location }) => {
+const ChatSidebar = ({
+  isMobile,
+  isLoading,
+  data,
+  onlineUsers,
+  newMessageNotification = [
+    {
+      chatId: "",
+      count: 0,
+    },
+  ],
+}) => {
   const [isNewGroupDialogOpen, setIsNewGroupDialogOpen] = useState(false);
   const [isNewContactDialogOpen, setIsNewContactDialogOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [member, setMember] = useState("");
-  const dispatch = useDispatch();
+  // const { isMobile } = useMediaQuery("max-width:800px");
+  // const dispatch = useDispatch();
 
   const handleNewGroupDialogClose = () => {
     setIsNewGroupDialogOpen(false);
@@ -25,23 +36,11 @@ const ChatSidebar = ({ isMobile, location }) => {
     setIsNewContactDialogOpen(false);
   };
 
-  useEffect(() => {
-    const timeOut = setTimeout(() => {
-      if (member) {
-        console.log(member);
-        dispatch(searchUserAction({ username: member }));
-      }
-    }, 500);
-    return () => {
-      clearTimeout(timeOut);
-    };
-  }, [member]);
-
   return (
     <>
       <Box
         height={isMobile ? "calc(100vh - 70px)" : "100%"}
-        width={isMobile ? "100%" : "330px"}
+        width={isMobile ? "100%" : "280px"}
         display={
           (location.pathname !== "/" && !isMobile) ||
           (location.pathname === "/" && isMobile) ||
@@ -91,21 +90,56 @@ const ChatSidebar = ({ isMobile, location }) => {
           {/* search component */}
           <Search search={search} setSearch={setSearch} />
         </Box>
-        {/* users list component */}
-        <ChatList />
+        {/* users list */}
+        {isLoading ? (
+          <Stack gap={1}>
+            {Array.from([1, 2, 3, 4]).map((i, index) => (
+              <Skeleton
+                key={index}
+                variant="rectangular"
+                width={"100%"}
+                height={"75px"}
+              />
+            ))}
+          </Stack>
+        ) : (
+          <Stack className="overflow-y-auto h-[calc(100%-170px)]">
+            {data?.chats?.map((chat, index) => {
+              const { _id, members } = chat;
+              const newMessageNotifi = newMessageNotification.find(
+                ({ chatId }) => chatId === _id
+              );
+
+              const isOnline = members?.some((member) =>
+                onlineUsers.includes(member)
+              );
+
+              return (
+                <ChatListItem
+                  key={index}
+                  chat={chat}
+                  isOnline={isOnline}
+                  newMessageNotifi={newMessageNotifi}
+                />
+              );
+            })}
+          </Stack>
+        )}
         {/* new group component */}
       </Box>
-      <NewGroup
-        open={isNewGroupDialogOpen}
-        onclose={handleNewGroupDialogClose}
-      />
+      {isNewGroupDialogOpen && (
+        <NewGroup
+          open={isNewGroupDialogOpen}
+          onclose={handleNewGroupDialogClose}
+        />
+      )}
       {/* new contact  */}
-      <NewContact
-        open={isNewContactDialogOpen}
-        onclose={handleNewChatDialogClose}
-        member={member}
-        setMember={setMember}
-      />
+      {isNewContactDialogOpen && (
+        <NewContact
+          open={isNewContactDialogOpen}
+          onclose={handleNewChatDialogClose}
+        />
+      )}
     </>
   );
 };

@@ -1,19 +1,57 @@
-import React, { lazy } from "react";
-const DialogBox = lazy(() => import("./"));
-import { Avatar, Box, Stack, Tooltip, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { DialogBox } from "./";
+import { Avatar, Box, Stack, Tooltip } from "@mui/material";
 import {
   KeyboardArrowLeftOutlined as KeyboardArrowLeftOutlinedIcon,
-  SearchOutlined as SearchOutlinedIcon,
   Delete as DeleteIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useDeleteAllMessagesMutation } from "../redux/api/api";
+import toast from "react-hot-toast";
+import ChatDetails from "./ChatDetails";
 
-const ChatHeader = () => {
+const ChatHeader = ({ chatId, chatDetails }) => {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isChatDetailDialogOpen, setIsChatDetailDialogOpen] = useState(false);
   const navigate = useNavigate();
-  const deleteChatHandler = () => {};
-  const navigateToHome = () => {
-    navigate("/");
+  const [mutate] = useDeleteAllMessagesMutation();
+
+  const handleClickOpen = () => {
+    setIsDeleteDialogOpen(true);
   };
+
+  const handleClose = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
+  const handleChatDetailClickOpen = () => {
+    setIsChatDetailDialogOpen(true);
+  };
+
+  const handleChatDetailClose = () => {
+    setIsChatDetailDialogOpen(false);
+  };
+
+  const deleteChatHandler = async () => {
+    try {
+      const res = await mutate(chatId);
+
+      if (res.data) {
+        toast.success(res.data.message);
+        navigate(`/chat/${chatId}`);
+      } else {
+        toast.error(res?.error?.data?.message || "Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+    } finally {
+      handleClose();
+    }
+  };
+
+  const navigateToHome = () => navigate("/");
+
   return (
     <>
       <Box className="p-4 border-b border-[#e6e6e6] dark:border-[#293145] lg:py-4 lg:px-6">
@@ -27,38 +65,47 @@ const ChatHeader = () => {
               <KeyboardArrowLeftOutlinedIcon />
             </Box>
             <Box className="h-9 w-9 mr-3">
-              <Avatar />
-              {/* <Avatar src={selectedUser && selectedUser?.avatar?.url} /> */}
+              <Avatar src={chatDetails?.chat?.avatar?.url} />
             </Box>
-            <h2 className="cursor-pointer">
-              {/* {selectedUser?.username} */}
-              fdfdfs
-            </h2>
-          </Stack>
-          <Stack direction={"row"} alignItems={"center"}>
-            <Box className="text-gray-500 ml-4 cursor-pointer">
-              <SearchOutlinedIcon />
-            </Box>
-            <Box
-              // onClick={handleClickOpen}
-              className=" ml-4 px-2 py-1 text-orange-600 cursor-pointer"
-            >
-              <Tooltip title="Delete all chats ?" arrow>
-                <DeleteIcon />
-              </Tooltip>
+            <Box>
+              <h2
+                className="cursor-pointer"
+                onClick={handleChatDetailClickOpen}
+              >
+                {chatDetails?.chat?.name}
+              </h2>
+              {chatDetails?.chat?.groupChat && (
+                <h6 className="text-xs">
+                  {chatDetails?.chat?.members.length} members
+                </h6>
+              )}
             </Box>
           </Stack>
+          <Box
+            onClick={handleClickOpen}
+            className=" ml-4 px-2 py-1 text-orange-600 cursor-pointer"
+          >
+            <Tooltip title="Delete all chats ?" arrow>
+              <DeleteIcon />
+            </Tooltip>
+          </Box>
         </Stack>
       </Box>
-      {/* <DialogBox
-        open={open}
+      <DialogBox
+        open={isDeleteDialogOpen}
         handleClose={handleClose}
         dialogactionOnSuccess={deleteChatHandler}
         dialogtitle="Are you sure you want to delete this message?"
         dialogcontentText="This action can't be undone"
         dialogactionText1="Cancel"
         dialogactionText2="Delete"
-      /> */}
+      />
+      <ChatDetails
+        chatId={chatId}
+        chatDetails={chatDetails}
+        isChatDetailDialogOpen={isChatDetailDialogOpen}
+        handleChatDetailClose={handleChatDetailClose}
+      />
     </>
   );
 };

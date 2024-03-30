@@ -7,7 +7,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Box,
 } from "@mui/material";
+import { useTheme } from "../context/themeContext";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -22,6 +24,7 @@ const DialogBox = ({
   dialogactionText2,
   dialogactionOnSuccess,
 }) => {
+  const { mode } = useTheme();
   return (
     <Dialog
       open={open}
@@ -30,27 +33,32 @@ const DialogBox = ({
       onClose={handleClose}
       aria-describedby="alert-dialog-slide-description"
     >
-      {dialogtitle && (
-        <DialogTitle sx={{ fontWeight: 600 }}>{dialogtitle}</DialogTitle>
-      )}
-      {dialogcontentText && (
-        <DialogContent>
-          <DialogContentText
-            sx={{ color: "black" }}
-            id="alert-dialog-slide-description"
-          >
-            {dialogcontentText}
-          </DialogContentText>
-        </DialogContent>
-      )}
-      <DialogActions>
-        <Button color="error" onClick={handleClose}>
-          {dialogactionText1}
-        </Button>
-        <Button color="success" onClick={dialogactionOnSuccess}>
-          {dialogactionText2}
-        </Button>
-      </DialogActions>
+      <Box
+        bgcolor={mode === "light" ? "white" : "#1a2236"}
+        color={mode === "light" ? "black" : "white"}
+      >
+        {dialogtitle && (
+          <DialogTitle sx={{ fontWeight: 600 }}>{dialogtitle}</DialogTitle>
+        )}
+        {dialogcontentText && (
+          <DialogContent>
+            <DialogContentText
+              color={mode === "light" ? "black" : "white"}
+              id="alert-dialog-slide-description"
+            >
+              {dialogcontentText}
+            </DialogContentText>
+          </DialogContent>
+        )}
+        <DialogActions>
+          <Button color="error" onClick={handleClose}>
+            {dialogactionText1}
+          </Button>
+          <Button color="success" onClick={dialogactionOnSuccess}>
+            {dialogactionText2}
+          </Button>
+        </DialogActions>
+      </Box>
     </Dialog>
   );
 };

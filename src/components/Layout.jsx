@@ -1,76 +1,107 @@
-import React, { useEffect, useState } from "react";
-import { ChatSidebar,  Sidebar } from ".";
-import { Outlet, useNavigate } from "react-router-dom";
-import { Stack, useMediaQuery } from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
+import { ChatSidebar, Sidebar } from ".";
+import { Box, Stack, useMediaQuery } from "@mui/material";
+import { useMyChatsQuery } from "../redux/api/api";
+import { useErrors } from "../hooks/useErrorsHook";
+import { useSocket } from "../context/socketContext";
+import { useSocketEvent } from "../hooks/useSocketEventHook";
+import {
+  NEW_MESSAGE_NOTIFICATION,
+  NEW_REQUEST,
+  ONLINEUSERS,
+  REFETCH_CHATS,
+} from "../constants/constants";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { SocketProvider } from "../context/socketContext";
-import { io } from "socket.io-client";
-import { currentUserDetailsAction } from "../redux/features/user/userActions";
-import { getChatsAction } from "../redux/features/chat/chatAction";
+import {
+  incrementRequestNotification,
+  setNewMessageNotification,
+} from "../redux/features/notification/notificationSlice";
 
-const Layout = () => {
-  const isAuth = JSON.parse(localStorage.getItem("isAuthenticated")) || false;
-  const user = useSelector((state) => state.currUser.user);
-  const isMobile = useMediaQuery("(max-width: 800px)");
-  const [socket, setSocket] = useState(null);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+const Layout = () => (WrappedComponent) => {
+  return (props) => {
+    const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
+    const { newMessageNotification, requestNotification } = useSelector(
+      (state) => state.notification
+    );
+    console.log(import.meta.env.VITE_SERVER_URL);
+    const socket = useSocket();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const isMobile = useMediaQuery("(max-width: 800px)");
+    const location = useLocation();
+    const [onlineUsers, setOnlineUsers] = useState([]);
 
-  useEffect(() => {
-    if (!isAuth) {
-      navigate("/login");
-    }
-  }, [isAuth, navigate]);
+    useErrors([{ isError, error }]);
 
-  useEffect(() => {
-    if (isAuth) {
-      dispatch(currentUserDetailsAction());
-      dispatch(getChatsAction());
-    }
-  }, [dispatch, isAuth]);
+    useEffect(() => {
+      localStorage.setItem(
+        NEW_MESSAGE_NOTIFICATION,
+        JSON.stringify(newMessageNotification)
+      );
+    }, [newMessageNotification]);
 
-  useEffect(() => {
-    if (isAuth && user) {
-      const newSocket = io("http://localhost:8080", {
-        auth: { id: user?._id },
-      });
-      setSocket(newSocket);
+    const refetchHandler = useCallback(() => {
+      refetch();
+      navigate("/");
+    }, [refetch, navigate]);
 
-      return () => {
-        newSocket.disconnect();
-      };
-    }
-  }, [user, isAuth]);
+    const newMessageNotificationHandler = (data) => {
+      dispatch(setNewMessageNotification(data));
+    };
 
-  return (
-    <SocketProvider socket={socket}>
+    const requestNotificationHandler = () => {
+      dispatch(incrementRequestNotification());
+    };
+
+    const onlineUsersHandler = (data) => {
+      setOnlineUsers(data);
+    };
+
+    useSocketEvent(socket, {
+      [REFETCH_CHATS]: refetchHandler,
+      [NEW_MESSAGE_NOTIFICATION]: newMessageNotificationHandler,
+      [NEW_REQUEST]: requestNotificationHandler,
+      [ONLINEUSERS]: onlineUsersHandler,
+    });
+
+    return (
       <Stack
         direction={"row"}
         height={"100vh"}
         width={"100vw"}
-        className="bg-white text-black dark:text-white dark:bg-[#1a2236]"
+        className="bg-white text-black dark:text-white dark:bg-[#1a2236] overscroll-x-hidden overflow-y-hidden"
       >
-        <Sidebar />
-        <ChatSidebar isMobile={isMobile} location={location} />
-        {location.pathname === "/" ? (
-          <Stack
-            height={"100%"}
-            sx={{ width: "calc(100% - 400px)" }}
-            justifyContent={"center"}
-            alignItems={"center"}
-            display={isMobile ? "none" : "flex"}
-          >
-            <p className="text-xl font-semibold">Select chat to message</p>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi, in!
-            </p>
-          </Stack>
-        ) : (
-          <Outlet />
-        )}
+        <Stack
+          width={"80px"}
+          height={"100%"}
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          paddingY={"20px"}
+          className="border-r-[1px] border-solid border-[rgba(209,213,219,1)] dark:text-[#acacac] dark:border-[#293145]"
+        >
+          <Sidebar requestNotification={requestNotification} />
+        </Stack>
+
+        <ChatSidebar
+          isMobile={isMobile}
+          isLoading={isLoading}
+          data={data}
+          onlineUsers={onlineUsers}
+          newMessageNotification={newMessageNotification}
+        />
+
+        <Box
+          height={"100%"}
+          width={isMobile ? "100%" : "calc(100% - 360px)"}
+          display={isMobile && location.pathname === "/" ? "none" : "block"}
+          className="bg-white dark:bg-inherit"
+        >
+          <WrappedComponent {...props} />
+        </Box>
       </Stack>
-    </SocketProvider>
-  );
+    );
+  };
 };
 
 export default Layout;

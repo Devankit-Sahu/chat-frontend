@@ -4,7 +4,7 @@ import ChatMessageItem from "./ChatMessageItem";
 import { Box, Divider, IconButton } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
-const ChatBox = ({ chatMessages, isLoading, isTyping, isMobile }) => {
+const ChatBox = ({ chatMessages, isLoading, userTyping, isMobile }) => {
   const chatContainerRef = useRef(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   let prevDate = null;
@@ -96,8 +96,8 @@ const ChatBox = ({ chatMessages, isLoading, isTyping, isMobile }) => {
           onScroll={handleScroll}
         >
           <>
-            {chatMessages.map((chat, index) => {
-              const currentDate = getFormattedDate(chat.createdAt);
+            {chatMessages.map((message, index) => {
+              const currentDate = getFormattedDate(message.createdAt);
               const showDate = prevDate !== currentDate;
               prevDate = currentDate;
 
@@ -106,11 +106,11 @@ const ChatBox = ({ chatMessages, isLoading, isTyping, isMobile }) => {
                   {showDate && (
                     <Divider className="w-full">{currentDate}</Divider>
                   )}
-                  <ChatMessageItem chat={chat} />
+                  <ChatMessageItem message={message} />
                 </React.Fragment>
               );
             })}
-            {isTyping && (
+            {userTyping && (
               <div className="typing-indicator">
                 <div className="dot"></div>
                 <div className="dot"></div>

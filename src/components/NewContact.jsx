@@ -13,35 +13,47 @@ import {
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useTheme } from "../context/themeContext";
 import { useDispatch, useSelector } from "react-redux";
-import { sendRequestAction } from "../redux/features/user/userActions";
 import { useSocket } from "../context/socketContext";
+import {
+  useLazySearchUserQuery,
+  useSendFriendRequestMutation,
+} from "../redux/api/api";
+import toast from "react-hot-toast";
 
-const NewContact = ({ open, onclose, member, setMember }) => {
-  const { searchedUser, isError } = useSelector((state) => state.searchUser);
-  const [error, setError] = useState(null);
+const NewContact = ({ open, onclose }) => {
+  const [users, setUsers] = useState([]);
+  const [member, setMember] = useState("");
   const inputRef = useRef(null);
   const { mode } = useTheme();
-  const dispatch = useDispatch();
-  const socket = useSocket();
+  const [searchUser] = useLazySearchUserQuery();
+  const [sendRequest] = useSendFriendRequestMutation();
 
   const handleInputChange = (e) => {
-    // setError(null);
     setMember(e.target.value);
   };
 
-  const sendRequest = () => {
-    // dispatch(sendRequestAction({ reciever_id: searchedUser._id }));
-    socket.emit("REQUEST", { reciever_id: searchedUser._id });
+  const sendRequestHandler = async (id) => {
     onclose();
+    const { data } = await sendRequest({ reciever_id: id });
+    toast.success(data?.message || "Friend request sent");
   };
 
-  const deleteRequest = () => {
+  const deleteRequestHandler = () => {
     // dispatching sendRequest action
   };
 
   useEffect(() => {
-    if (isError) setError(isError);
-  }, [isError]);
+    const timeOut = setTimeout(() => {
+      if (member) {
+        searchUser(member)
+          .then((res) => setUsers(res?.data?.users))
+          .catch((error) => console.log(error));
+      }
+    }, 500);
+    return () => {
+      clearTimeout(timeOut);
+    };
+  }, [member]);
 
   return (
     <Dialog
@@ -84,29 +96,39 @@ const NewContact = ({ open, onclose, member, setMember }) => {
         <InputBox
           value={member}
           onChange={handleInputChange}
-          placeholder="Search contact"
+          placeholder="Search member"
           ref={inputRef}
           className="w-full outline-none bg-[rgba(241,241,241,1)] p-2 my-6 dark:bg-inherit placeholder:text-black dark:text-white dark:border-[1px] dark:border-solid dark:border-[#293145] dark:placeholder:text-white"
         />
-        {searchedUser && (
-          <Stack
-            direction={"row"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            className="dark:text-white"
-          >
-            <Stack direction={"row"} gap={3} alignItems={"center"}>
-              <Avatar />
-              <p>{searchedUser.username}</p>
+        {users.length > 0 &&
+          users?.map((user, index) => (
+            <Stack
+              key={index}
+              direction={"row"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              className="dark:text-white cursor-pointer hover:bg-[#262b3c]"
+            >
+              <Stack
+                direction={"row"}
+                gap={3}
+                alignItems={"center"}
+                padding={1}
+              >
+                <Avatar src={user?.avatar} />
+                <p>{user.username}</p>
+                {user.isFreindRequestExist ? (
+                  <Button onClick={() => deleteRequestHandler()}>
+                    Pending
+                  </Button>
+                ) : (
+                  <Button onClick={() => sendRequestHandler(user._id)}>
+                    Add Friend
+                  </Button>
+                )}
+              </Stack>
             </Stack>
-            {searchedUser?.isFriend ? (
-              <Button onClick={deleteRequest}>Unfriend</Button>
-            ) : (
-              <Button onClick={sendRequest}>Add friend</Button>
-            )}
-          </Stack>
-        )}
-        {error && <Alert severity="error">{error}</Alert>}
+          ))}
       </Box>
     </Dialog>
   );

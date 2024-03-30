@@ -1,76 +1,95 @@
 import React from "react";
-import {
-  Avatar,
-  Chip,
-  Drawer,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, Chip, Drawer, IconButton, Stack } from "@mui/material";
 import { Logout as LogoutIcon, Close as CloseIcon } from "@mui/icons-material";
 import { Button } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { userNotExists } from "../redux/features/auth/authSlice";
+import axios from "axios";
+import { server } from "../config/config";
+import toast from "react-hot-toast";
+import moment from "moment";
+import { useSocket } from "../context/socketContext";
+import { useTheme } from "../context/themeContext";
 
-const Profile = ({ open, toggleDrawer, logout, user }) => {
+const Profile = ({ isProfileDialogOpen, profileDialogClose, user }) => {
+  const dispatch = useDispatch();
+  const socket = useSocket();
+  const { mode } = useTheme();
+
+  const logoutHandler = async () => {
+    try {
+      const { data } = await axios.get(`${server}/api/v1/auth/logout`, {
+        withCredentials: true,
+      });
+      dispatch(userNotExists());
+      toast.success(data.message);
+      socket.disconnect();
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    }
+  };
+
   return (
-    <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+    <Drawer
+      anchor="right"
+      open={isProfileDialogOpen}
+      onClose={profileDialogClose}
+    >
       <Stack
         bgcolor={"black"}
         height={"100%"}
         color={"white"}
         width={"350px"}
         alignItems={"center"}
-        position={"relative"}
+        paddingTop={1}
+        paddingX={3}
       >
-        <div className="relative w-full">
-          <img src="/profilebg.jpg" alt="profile-bg" />
-          <IconButton
-            onClick={toggleDrawer(false)}
-            sx={{
-              position: "absolute",
-              right: "10px",
-              top: "10px",
-            }}
-          >
-            <CloseIcon fontSize="large" className="text-black" />
+        <Box marginLeft={"auto"}>
+          <IconButton onClick={profileDialogClose}>
+            <CloseIcon
+              className={`${mode === "light" ? "text-black" : "text-white"}`}
+            />
           </IconButton>
-          <Avatar
-            // src={user ? user.avatar.url : "N"}
-            className=" -bottom-[3rem] left-1/2 transform -translate-x-1/2"
-            sx={{
-              width: 100,
-              height: 100,
-              position: "absolute",
-            }}
-          />
-        </div>
-        <Typography marginY={"8px"}>user</Typography>
-        {/* <Typography marginY={"8px"}>{user && user.username}</Typography> */}
+        </Box>
+        <Avatar
+          src={user?.avatar?.url}
+          sx={{
+            width: 100,
+            height: 100,
+          }}
+        />
         <Stack alignItems={"center"} marginY={"10px"} gap={"10px"}>
-          <p className="text-center text-xs">about</p>
-          {/* <p className="text-center text-xs">{user && user.about}</p> */}
-          <Chip variant="outlined" label="Bio" color="info" />
+          <h1 className="text-center text-xl capitalize">{user.username}</h1>
+          <Chip variant="outlined" label="Username" color="info" />
         </Stack>
         <Stack alignItems={"center"} marginY={"10px"} gap={"10px"}>
-          <p className="text-center text-xl">email</p>
-          {/* <p className="text-center text-xl">{user && user.email}</p> */}
+          <p className="text-center text-xl capitalize">
+            {user && user?.about}
+          </p>
+          <Chip variant="outlined" label="About" color="info" />
+        </Stack>
+        <Stack alignItems={"center"} marginY={"10px"} gap={"10px"}>
+          <p className="text-center text-xl">{user && user.email}</p>
           <Chip variant="outlined" label="Email" color="info" />
         </Stack>
         <Stack alignItems={"center"} marginY={"10px"} gap={"10px"}>
-          <p className="text-center text-xl">1 month ago</p>
-          <Chip variant="outlined" label="Joined On" color="info" />
+          <p className="text-center text-xl">
+            {moment(user?.createdAt).fromNow()}
+          </p>
+          <Chip variant="outlined" label="Created On" color="info" />
         </Stack>
         <Button
           sx={{ marginTop: "auto", width: "100%" }}
           variant="contained"
           color="info"
-          onClick={logout}
+          onClick={logoutHandler}
         >
           <LogoutIcon />
           <span className="ml-3">Logout</span>
         </Button>
       </Stack>
     </Drawer>
-    // <div></div>
   );
 };
 

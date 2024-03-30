@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import {
   Box,
   Dialog,
@@ -17,21 +17,17 @@ import {
 } from "@mui/icons-material";
 import { InputBox, Loader } from ".";
 import { useTheme } from "../context/themeContext";
-import { useDispatch, useSelector } from "react-redux";
-import { allMyFriendsAction } from "../redux/features/user/userActions";
-import { newGroupChatAction } from "../redux/features/chat/chatAction";
-import { toast, Bounce } from "react-toastify";
+import toast from "react-hot-toast";
+import { useMyFriendsQuery, useNewGroupMutation } from "../redux/api/api";
 
 const NewGroup = ({ open, onclose }) => {
-  const { myFriends } = useSelector((state) => state.allMyFriends);
-  const { isLoading, isError, message } = useSelector(
-    (state) => state.newGroup
-  );
   const [members, setMembers] = useState([]);
   const [checkedIndices, setCheckedIndices] = useState([]);
   const [groupName, setGroupName] = useState("");
   const { mode } = useTheme();
-  const dispatch = useDispatch();
+
+  const { data } = useMyFriendsQuery();
+  const [newGroupMutation, { isLoading }] = useNewGroupMutation();
 
   const handleMembers = (index, item) => {
     setMembers((prev) => {
@@ -49,46 +45,21 @@ const NewGroup = ({ open, onclose }) => {
       }
     });
   };
+  
+  const createGroupHandler = async () => {
+    if (members.length < 1) {
+      toast.error("Atleast one member is required");
+      return;
+    }
+    const { data, error } = await newGroupMutation({
+      name: groupName,
+      members,
+    });
 
-  const createGroupHandler = () => {
-    if (!members.length) return;
-    dispatch(newGroupChatAction({ name: groupName, members }));
+    if (data) toast.success(data?.message);
+    else toast.error(error?.data?.message);
     onclose();
   };
-
-  useEffect(() => {
-    dispatch(allMyFriendsAction());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (message)
-      toast.success(message, {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-      });
-  }, [message]);
-
-  useEffect(() => {
-    if (isError)
-      toast.error(isError, {
-        position: "bottom-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-      });
-  }, [isError]);
 
   return (
     <Dialog
@@ -151,7 +122,7 @@ const NewGroup = ({ open, onclose }) => {
           }}
         />
         <Box sx={{ overflowY: "auto", maxHeight: "380px" }}>
-          {myFriends?.map((item, index) => (
+          {data?.myFriends?.map((item, index) => (
             <Box paddingY={"10px"} key={index}>
               <Stack
                 direction={"row"}
@@ -167,8 +138,8 @@ const NewGroup = ({ open, onclose }) => {
                   className="cursor-pointer"
                   checked={checkedIndices.includes(index)}
                   onChange={() => handleMembers(index, item._id)}
-                  icon={<IndeterminateCheckBoxIcon />}
-                  checkedIcon={<AddBoxIcon />}
+                  icon={<AddBoxIcon />}
+                  checkedIcon={<IndeterminateCheckBoxIcon />}
                   sx={{
                     color: "#008394",
                     "&.Mui-checked": {

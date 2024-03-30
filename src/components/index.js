@@ -1,5 +1,3 @@
-import Login from "./Login";
-import Signup from "./Signup";
 import ChatBox from "./ChatBox";
 import Sidebar from "./Sidebar";
 import Loader from "./Loader";
@@ -17,10 +15,9 @@ import Notification from "./Notification";
 import Search from "./Search";
 import NewGroup from "./NewGroup";
 import NewContact from "./NewContact";
+import FileMenu from "./FileMenu";
 
 export {
-  Login,
-  Signup,
   ChatBox,
   Sidebar,
   Loader,
@@ -38,4 +35,5 @@ export {
   Search,
   NewGroup,
   NewContact,
+  FileMenu,
 };

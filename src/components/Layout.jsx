@@ -24,7 +24,6 @@ const Layout = () => (WrappedComponent) => {
     const { newMessageNotification, requestNotification } = useSelector(
       (state) => state.notification
     );
-    console.log(import.meta.env.VITE_SERVER_URL);
     const socket = useSocket();
     const navigate = useNavigate();
     const dispatch = useDispatch();

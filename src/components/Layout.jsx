@@ -17,6 +17,7 @@ import {
   incrementRequestNotification,
   setNewMessageNotification,
 } from "../redux/features/notification/notificationSlice";
+import MobileNav from "./MobileNav";
 
 const Layout = () => (WrappedComponent) => {
   return (props) => {
@@ -71,16 +72,9 @@ const Layout = () => (WrappedComponent) => {
         width={"100vw"}
         className="bg-white text-black dark:text-white dark:bg-[#1a2236] overscroll-x-hidden overflow-y-hidden"
       >
-        <Stack
-          width={"80px"}
-          height={"100%"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          paddingY={"20px"}
-          className="border-r-[1px] border-solid border-[rgba(209,213,219,1)] dark:text-[#acacac] dark:border-[#293145]"
-        >
-          <Sidebar requestNotification={requestNotification} />
-        </Stack>
+        <Sidebar requestNotification={requestNotification} />
+        {/* for mobile screen */}
+        <MobileNav requestNotification={requestNotification} />
 
         <ChatSidebar
           isMobile={isMobile}
@@ -94,7 +88,7 @@ const Layout = () => (WrappedComponent) => {
           height={"100%"}
           width={isMobile ? "100%" : "calc(100% - 360px)"}
           display={isMobile && location.pathname === "/" ? "none" : "block"}
-          className="bg-white dark:bg-inherit"
+          className="bg-white dark:bg-inherit relative z-10"
         >
           <WrappedComponent {...props} />
         </Box>

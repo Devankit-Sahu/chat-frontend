@@ -56,22 +56,18 @@ const NewContact = ({ open, onclose }) => {
   }, [member]);
 
   return (
-    <Dialog
-      open={open}
-      onClose={onclose}
-      sx={{
-        ".css-1t1j96h-MuiPaper-root-MuiDialog-paper": {
-          backgroundColor: mode === "light" ? "white" : "#1a2236",
-        },
-      }}
-    >
-      <Box width={400} padding={2}>
+    <Dialog open={open} onClose={onclose}>
+      <Box
+        padding={2}
+        bgcolor={mode === "light" ? "white" : "#1a2236"}
+        className="contact-dialog w-[300px] sm:w-[400px]"
+      >
         <Stack
           direction={"row"}
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <h1 className="capitalize font-[700] text-xl text-[#0a80ff]">
+          <h1 className="capitalize font-[700] text-base sm:text-xl text-[#0a80ff]">
             add new contact
           </h1>
           <IconButton
@@ -115,7 +111,19 @@ const NewContact = ({ open, onclose }) => {
                 alignItems={"center"}
                 padding={1}
               >
-                <Avatar src={user?.avatar} />
+                <Avatar
+                  src={user?.avatar}
+                  sx={{
+                    width: {
+                      xs: 30,
+                      sm: "40px",
+                    },
+                    height: {
+                      xs: 30,
+                      sm: "40px",
+                    },
+                  }}
+                />
                 <p>{user.username}</p>
                 {user.isFreindRequestExist ? (
                   <Button onClick={() => deleteRequestHandler()}>

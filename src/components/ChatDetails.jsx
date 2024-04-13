@@ -81,7 +81,7 @@ const ChatDetails = ({
       aria-describedby="alert-dialog-slide-description"
     >
       <Stack
-        width={400}
+        className="w-[300px] sm:w-[400px]"
         padding={3}
         gap={2}
         bgcolor={mode === "light" ? "white" : "#1a2236"}

@@ -19,8 +19,7 @@ const SendMessageForm = ({
         alignItems={"center"}
         justifyContent={"space-between"}
         height={"10vh"}
-        paddingX={"40px"}
-        className="border-t-[1px] border-solid border-[rgba(161,161,170,1)] dark:border-[#293145]"
+        className="border-t-[1px] border-solid border-[rgba(161,161,170,1)] dark:border-[#293145] px-4"
       >
         <IconButton onClick={handleFileOpen}>
           <AttachFileIcon color="info" />

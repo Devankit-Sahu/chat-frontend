@@ -12,7 +12,7 @@ import {
 import { useTheme } from "../context/themeContext";
 import { useSelector } from "react-redux";
 
-const Sidebar = ({ requestNotification }) => {
+const MobileNav = ({ requestNotification }) => {
   const { user } = useSelector((state) => state.auth);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isNotificationDialogOpen, setIsNotificationDialogOpen] =
@@ -30,15 +30,13 @@ const Sidebar = ({ requestNotification }) => {
   const handleModeToggle = () => {
     toggleMode();
   };
-
   return (
     <Box
-      width={"80px"}
-      height={"100%"}
-      paddingY={"20px"}
-      className="hidden sm:flex sm:flex-col sm:items-center sm:justify-between border-r-[1px] border-solid border-[rgba(209,213,219,1)] dark:text-[#acacac] dark:border-[#293145]"
+      className="flex items-center justify-between fixed z-0 sm:hidden bottom-0 w-full border-t border-solid border-zinc-300 dark:border-[#293145]"
+      height={"60px"}
+      paddingX={3}
     >
-      <Stack spacing={3}>
+      <Stack direction={"row"} alignItems={"center"} spacing={3}>
         <Link to={"/"}>
           <Tooltip
             title="Chats"
@@ -62,7 +60,7 @@ const Sidebar = ({ requestNotification }) => {
           </Tooltip>
         </Box>
       </Stack>
-      <Stack alignItems={"center"} gap={4}>
+      <Stack direction={"row"} alignItems={"center"} gap={4}>
         <Tooltip
           arrow
           title={
@@ -106,4 +104,4 @@ const Sidebar = ({ requestNotification }) => {
   );
 };
 
-export default Sidebar;
+export default MobileNav;

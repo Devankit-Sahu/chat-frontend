@@ -1,8 +1,7 @@
-import React, { lazy, useEffect, useState } from "react";
+import React, { lazy, useState } from "react";
 const NewGroup = lazy(() => import("./NewGroup"));
 const NewContact = lazy(() => import("./NewContact"));
-import { Search } from ".";
-import { Box, Skeleton, Stack, Tooltip, useMediaQuery } from "@mui/material";
+import { Box, Skeleton, Stack, Tooltip } from "@mui/material";
 import {
   EditNoteOutlined as EditNoteOutlinedIcon,
   GroupOutlined as GroupOutlinedIcon,
@@ -23,10 +22,6 @@ const ChatSidebar = ({
 }) => {
   const [isNewGroupDialogOpen, setIsNewGroupDialogOpen] = useState(false);
   const [isNewContactDialogOpen, setIsNewContactDialogOpen] = useState(false);
-  const [search, setSearch] = useState("");
-  const [member, setMember] = useState("");
-  // const { isMobile } = useMediaQuery("max-width:800px");
-  // const dispatch = useDispatch();
 
   const handleNewGroupDialogClose = () => {
     setIsNewGroupDialogOpen(false);
@@ -87,8 +82,6 @@ const ChatSidebar = ({
               </Box>
             </Stack>
           </Stack>
-          {/* search component */}
-          <Search search={search} setSearch={setSearch} />
         </Box>
         {/* users list */}
         {isLoading ? (

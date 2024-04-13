@@ -17,6 +17,7 @@ import {
 import { resetRequestNotification } from "../redux/features/notification/notificationSlice";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
+import { useTheme } from "../context/themeContext";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="right" ref={ref} {...props} />;
@@ -30,6 +31,7 @@ const Notification = ({
   const { data } = useGetNotificatonQuery();
   const [acceptRequest] = useAcceptFriendRequestMutation();
   const dispatch = useDispatch();
+  const { mode } = useTheme();
 
   const acceptRequestHandler = async (id) => {
     notificationDialogClose();
@@ -54,7 +56,11 @@ const Notification = ({
       TransitionComponent={Transition}
       keepMounted
     >
-      <Box className="bg-white dark:bg-[#1a2236] dark:text-white" width={500}>
+      <Box
+        padding={2}
+        bgcolor={mode === "light" ? "white" : "#1a2236"}
+        className="notification-dialog w-[300px] sm:w-[400px] dark:text-white"
+      >
         <Stack
           direction={"row"}
           justifyContent={"space-between"}

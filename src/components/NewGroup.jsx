@@ -45,7 +45,7 @@ const NewGroup = ({ open, onclose }) => {
       }
     });
   };
-  
+
   const createGroupHandler = async () => {
     if (members.length < 1) {
       toast.error("Atleast one member is required");
@@ -62,22 +62,18 @@ const NewGroup = ({ open, onclose }) => {
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={onclose}
-      sx={{
-        ".css-1t1j96h-MuiPaper-root-MuiDialog-paper": {
-          backgroundColor: mode === "light" ? "white" : "#1a2236",
-        },
-      }}
-    >
-      <Box padding={"10px"} width={"350px"}>
+    <Dialog open={open} onClose={onclose}>
+      <Box
+        padding={2}
+        bgcolor={mode === "light" ? "white" : "#1a2236"}
+        className="group-dialog w-[300px] sm:w-[400px]"
+      >
         <Stack
           direction={"row"}
           alignItems={"center"}
           justifyContent={"space-between"}
         >
-          <h1 className="capitalize font-[700] text-xl text-[#0a80ff]">
+          <h1 className="capitalize font-[700] text-base sm:text-xl text-[#0a80ff]">
             new group
           </h1>
           <IconButton

@@ -4,7 +4,6 @@ import Loader from "./Loader";
 import Layout from "./Layout";
 import InputBox from "./InputBox";
 import ChangePassword from "./ChangePassword";
-import ChatContainer from "./ChatContainer";
 import ChatList from "./ChatList";
 import DialogBox from "./DialogBox";
 import ChatHeader from "./ChatHeader";
@@ -24,7 +23,6 @@ export {
   Layout,
   InputBox,
   ChangePassword,
-  ChatContainer,
   ChatList,
   DialogBox,
   ChatHeader,

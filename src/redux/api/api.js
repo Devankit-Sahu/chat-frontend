@@ -15,7 +15,7 @@ const api = createApi({
     }),
     getAllMessages: builder.query({
       query: ({ chatId }) => ({
-        url: `/chat/message/${chatId}`,
+        url: `chat/message/${chatId}`,
         credentials: "include",
       }),
       providesTags: ["Chat"],

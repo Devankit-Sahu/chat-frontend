@@ -75,3 +75,11 @@ body {
     transform: scale(1);
   }
 }
+
+@media screen and (max-width: 400px) {
+  .contact-dialog,
+  .group-dialog,
+  .notification-dialog {
+    width: 240px;
+  }
+}

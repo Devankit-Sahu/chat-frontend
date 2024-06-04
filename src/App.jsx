@@ -30,12 +30,20 @@ const App = () => {
     document.querySelector("body").classList.add(mode);
   }, [mode]);
 
+  const getUser = async () => {
+    try {
+      const { data } = await axios.get(`${server}/api/v1/user/me`, {
+        withCredentials: true,
+      });
+      dispatch(userExists(data.user));
+    } catch (error) {
+      dispatch(userNotExists());
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get(`${server}/api/v1/user/me`, { withCredentials: true })
-      .then(({ data }) => dispatch(userExists(data.user)))
-      .catch((err) => dispatch(userNotExists()));
-  }, [dispatch]);
+    if (!user) getUser();
+  }, []);
 
   return isLoading ? (
     <LayoutLoader />

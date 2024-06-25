@@ -9,9 +9,6 @@ const LayoutLoader = () => {
           "w-[100px] h-[100px] border-t-2 border-black dark:border-white"
         }
       />
-      <p className="text-base sm:text-xl text-center px-3 text-black dark:text-white">
-        Content is loading...Please wait for while!!!
-      </p>
     </div>
   );
 };

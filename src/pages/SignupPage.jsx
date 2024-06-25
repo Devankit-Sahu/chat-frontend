@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { InputBox, Loader } from "../components";
-import backgroundImage from "../assets/bg.jpg";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Avatar, Box, Stack } from "@mui/material";
@@ -62,6 +61,12 @@ const SignupPage = () => {
     if (user.avatar) {
       userData.append("avatar", user.avatar);
     }
+
+    if (!user.username || !user.email || !user.password || !user.about) {
+      toast.error("All fields are required");
+      return;
+    }
+
     setIsLoading(true);
 
     const config = {
@@ -100,10 +105,13 @@ const SignupPage = () => {
       width={"100vw"}
       className=" overflow-x-hidden"
     >
-      <Box
-        className="hidden sm:block sm:w-[50vw] bg-cover bg-center bg-no-repeat h-full"
-        style={{ backgroundImage: `url(${backgroundImage})` }}
-      ></Box>
+      <Box className="hidden sm:flex items-center justify-center w-1/2 bg-blue-400 bg-gradient-to-b from-[#68e7de] via-[#7b90d0] to-[#587be4]">
+        <Box className="flex items-center flex-col gap-3">
+          <img className="w-20" src="/logo.svg" alt="logo" />
+          <h1 className="text-3xl font-semibold text-white">ChatEase</h1>
+          <p className="text-base text-gray-300">Welcome to ChatEase.</p>
+        </Box>
+      </Box>
       <Stack
         alignItems={"center"}
         className="w-full sm:w-[50%]"
@@ -199,7 +207,10 @@ const SignupPage = () => {
               className="w-full h-10 outline-none placeholder:text-gray-600"
             />
           </Stack>
-          <button className="w-full bg-blue-500 text-white font-semibold py-3 rounded hover:bg-blue-600 active:scale-[.9]">
+          <button
+            disabled={isLoading}
+            className="w-full bg-gradient-to-r from-[#68e7de] via-[#7b90d0] to-[#587be4] text-white font-semibold py-3 rounded hover:bg-blue-600 active:scale-[.9]"
+          >
             {isLoading ? (
               <Loader className="border-t-2 border-t-[#fff] w-[22px] h-[22px]" />
             ) : (

@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar, Box, Stack } from "@mui/material";
 import { useSelector } from "react-redux";
-import RenderAttachment from "./RenderAttachment";
+import RenderAttachment from "../RenderAttachment";
 import moment from "moment";
 
 const ChatMessageItem = ({ message }) => {

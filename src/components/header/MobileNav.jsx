@@ -1,16 +1,19 @@
 import React, { lazy, useState } from "react";
-const Profile = lazy(() => import("./Profile"));
-const Notification = lazy(() => import("./Notification"));
+const Profile = lazy(() => import("../Profile"));
+const Notification = lazy(() => import("../dialogs/Notification"));
 import { Link } from "react-router-dom";
-import { Avatar, Badge, Box, Stack, Tooltip } from "@mui/material";
+import { Avatar, Badge } from "@mui/material";
 import {
   Chat as ChatIcon,
   NotificationsOutlined as NotificationsOutlinedIcon,
   DarkModeOutlined as DarkModeOutlinedIcon,
   LightModeOutlined as LightModeOutlinedIcon,
+  Group as GroupIcon,
+  Logout as LogoutIcon,
 } from "@mui/icons-material";
-import { useTheme } from "../context/themeContext";
+import { useTheme } from "../../context/themeContext";
 import { useSelector } from "react-redux";
+import { useLazySignOutQuery } from "../../redux/api/api";
 
 const MobileNav = ({ requestNotification }) => {
   const { user } = useSelector((state) => state.auth);
@@ -18,6 +21,7 @@ const MobileNav = ({ requestNotification }) => {
   const [isNotificationDialogOpen, setIsNotificationDialogOpen] =
     useState(false);
   const { mode, toggleMode } = useTheme();
+  const [singoutQuery] = useLazySignOutQuery();
 
   const profileDialogClose = () => {
     setIsProfileDialogOpen(false);
@@ -30,45 +34,43 @@ const MobileNav = ({ requestNotification }) => {
   const handleModeToggle = () => {
     toggleMode();
   };
+
+  const logoutHandler = async () => {
+    await singoutQuery()
+      .unwrap()
+      .then((res) => {
+        dispatch(userNotExists());
+        toast.success(res?.message);
+        socket.disconnect();
+      })
+      .catch((error) => {
+        error?.data?.message.forEach((err) =>
+          toast.error(err || "Something Went Wrong")
+        );
+      });
+  };
+
   return (
-    <Box
-      className="flex items-center justify-between fixed z-0 sm:hidden bottom-0 w-full border-t border-solid border-zinc-300 dark:border-[#293145]"
-      height={"60px"}
-      paddingX={3}
-    >
-      <Stack direction={"row"} alignItems={"center"} spacing={3}>
-        <Link to={"/"}>
-          <Tooltip
-            title="Chats"
-            arrow
-            placement="right-start"
-            className="cursor-pointer"
-          >
+    <div className="flex items-center justify-between h-[60px] fixed z-0 sm:hidden bottom-0 w-full border-t border-solid border-zinc-300 dark:border-[#293145]">
+      <div className="flex items-center justify-between w-full h-full px-4">
+        <div className="flex items-center gap-5">
+          <Link to={"/"}>
             <ChatIcon />
-          </Tooltip>
-        </Link>
-        <Box onClick={() => setIsNotificationDialogOpen(true)}>
-          <Tooltip
-            title="Notifications"
-            arrow
-            placement="right-start"
-            className="cursor-pointer"
-          >
+          </Link>
+          <Link to={"/groups"}>
+            <GroupIcon />
+          </Link>
+          <div onClick={() => setIsNotificationDialogOpen(true)}>
             <Badge badgeContent={requestNotification} color="success">
               <NotificationsOutlinedIcon />
             </Badge>
-          </Tooltip>
-        </Box>
-      </Stack>
-      <Stack direction={"row"} alignItems={"center"} gap={4}>
-        <Tooltip
-          arrow
-          title={
-            mode === "light" ? "switch to dark mode" : "switch to light mode"
-          }
-          placement="right"
-        >
-          <Box
+          </div>
+        </div>
+        <div className="flex items-center gap-5">
+          <div onClick={logoutHandler}>
+            <LogoutIcon />
+          </div>
+          <div
             onClick={handleModeToggle}
             className="cursor-pointer dark:hover:bg-[#293145] p-3 rounded-md"
           >
@@ -77,15 +79,16 @@ const MobileNav = ({ requestNotification }) => {
             ) : (
               <LightModeOutlinedIcon />
             )}
-          </Box>
-        </Tooltip>
-        <Box
-          onClick={() => setIsProfileDialogOpen(true)}
-          className="cursor-pointer"
-        >
-          <Avatar />
-        </Box>
-      </Stack>
+          </div>
+          <div
+            onClick={() => setIsProfileDialogOpen(true)}
+            className="cursor-pointer"
+          >
+            <Avatar sx={{ width: "30px", height: "30px" }} />
+          </div>
+        </div>
+      </div>
+
       {isProfileDialogOpen && (
         <Profile
           isProfileDialogOpen={isProfileDialogOpen}
@@ -100,7 +103,7 @@ const MobileNav = ({ requestNotification }) => {
           user={user}
         />
       )}
-    </Box>
+    </div>
   );
 };
 

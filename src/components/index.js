@@ -1,37 +1,49 @@
-import ChatBox from "./ChatBox";
-import Sidebar from "./Sidebar";
-import Loader from "./Loader";
-import Layout from "./Layout";
-import InputBox from "./InputBox";
-import ChangePassword from "./ChangePassword";
-import ChatList from "./ChatList";
-import DialogBox from "./DialogBox";
-import ChatHeader from "./ChatHeader";
-import ChatSidebar from "./ChatSidebar";
-import Profile from "./Profile";
-import LayoutLoader from "./LayoutLoader";
-import Notification from "./Notification";
-import Search from "./Search";
-import NewGroup from "./NewGroup";
-import NewContact from "./NewContact";
+import ChatBox from "./chat/ChatBox";
+import ChatContainer from "./chat/ChatContainer";
+import ChatHeader from "./chat/ChatHeader";
+import ChatList from "./chat/ChatList";
+import ChatListItem from "./chat/ChatListItem";
+import ChatMessageItem from "./chat/ChatMessageItem";
+import ChatSidebar from "./chat/ChatSidebar";
+import SendMessageForm from "./chat/SendMessageForm";
+import Layout from "./layout/Layout";
+import LayoutLoader from "./layout/LayoutLoader";
+import Loader from "./layout/Loader";
+import MobileNav from "./header/MobileNav";
+import Sidebar from "./header/Sidebar";
 import FileMenu from "./FileMenu";
+import InputBox from "./InputBox";
+import Profile from "./Profile";
+import RenderAttachment from "./RenderAttachment";
+import Search from "./Search";
+import DialogBox from "./dialogs/DialogBox";
+import Notification from "./dialogs/Notification";
+import ChatDetails from "./dialogs/ChatDetails";
+import NewContact from "./dialogs/NewContact";
+import NewGroup from "./dialogs/NewGroup";
 
 export {
   ChatBox,
-  Sidebar,
-  Loader,
-  Layout,
-  InputBox,
-  ChangePassword,
-  ChatList,
-  DialogBox,
+  ChatContainer,
   ChatHeader,
+  ChatList,
+  ChatListItem,
+  ChatMessageItem,
   ChatSidebar,
-  Profile,
+  SendMessageForm,
+  Layout,
   LayoutLoader,
-  Notification,
-  Search,
-  NewGroup,
-  NewContact,
+  Loader,
+  MobileNav,
+  Sidebar,
   FileMenu,
+  InputBox,
+  Profile,
+  RenderAttachment,
+  Search,
+  DialogBox,
+  Notification,
+  ChatDetails,
+  NewContact,
+  NewGroup,
 };

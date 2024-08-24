@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import Loader from "./Loader";
+import Loader from "../layout/Loader";
 import ChatMessageItem from "./ChatMessageItem";
-import { Box, Divider, IconButton } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
-const ChatBox = ({ chatMessages, isLoading, userTyping, isMobile }) => {
+const ChatBox = ({ chatMessages, isLoading }) => {
   const chatContainerRef = useRef(null);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   let prevDate = null;
@@ -110,38 +110,15 @@ const ChatBox = ({ chatMessages, isLoading, userTyping, isMobile }) => {
                 </React.Fragment>
               );
             })}
-            {userTyping && (
-              <div className="typing-indicator">
-                <div className="dot"></div>
-                <div className="dot"></div>
-                <div className="dot"></div>
-              </div>
-            )}
           </>
 
           {showScrollToBottom && (
-            <Box
-              position={"absolute"}
-              zIndex={100}
-              bottom={"20px"}
-              right={"30px"}
-              display={"flex"}
-              justifyContent={"center"}
-              marginTop={"8px"}
+            <div
+              onClick={handleScrollToBottom}
+              className="cursor-pointer bg-[#3094e8] hover:bg-[#5bb4fe] absolute z-[100] bottom-5 right-6 flex justify-center items-center p-2 rounded-full"
             >
-              <IconButton
-                onClick={handleScrollToBottom}
-                sx={{
-                  backgroundColor: "#3094e8",
-                  color: "white",
-                  ":hover": {
-                    backgroundColor: "#5bb4fe",
-                  },
-                }}
-              >
-                <ArrowDownwardIcon />
-              </IconButton>
-            </Box>
+              <ArrowDownwardIcon />
+            </div>
           )}
         </Box>
       )}

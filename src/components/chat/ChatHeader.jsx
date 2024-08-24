@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { DialogBox } from "./";
+import React, { lazy, useState } from "react";
+import { DialogBox } from "../";
 import { Avatar, Box, Stack, Tooltip } from "@mui/material";
 import {
   KeyboardArrowLeftOutlined as KeyboardArrowLeftOutlinedIcon,
   Delete as DeleteIcon,
 } from "@mui/icons-material";
+const ChatDetails = lazy(() => import("../dialogs/ChatDetails"));
 import { useNavigate } from "react-router-dom";
-import { useDeleteAllMessagesMutation } from "../redux/api/api";
+import { useDeleteAllMessagesMutation } from "../../redux/api/api";
 import toast from "react-hot-toast";
-import ChatDetails from "./ChatDetails";
 
-const ChatHeader = ({ chatId, chatDetails }) => {
+const ChatHeader = ({ userTyping, chatId, chatDetails }) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isChatDetailDialogOpen, setIsChatDetailDialogOpen] = useState(false);
   const navigate = useNavigate();
@@ -74,16 +74,14 @@ const ChatHeader = ({ chatId, chatDetails }) => {
               >
                 {chatDetails?.chat?.name}
               </h2>
-              {chatDetails?.chat?.groupChat && (
-                <h6 className="text-xs">
-                  {chatDetails?.chat?.members.length} members
-                </h6>
+              {userTyping && (
+                <h6 className="text-xs text-gray-400">typing...</h6>
               )}
             </Box>
           </Stack>
           <Box
             onClick={handleClickOpen}
-            className=" ml-4 px-2 py-1 text-orange-600 cursor-pointer"
+            className=" ml-4 px-2 py-1 cursor-pointer"
           >
             <Tooltip title="Delete all chats ?" arrow>
               <DeleteIcon />

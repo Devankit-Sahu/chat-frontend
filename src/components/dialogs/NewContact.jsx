@@ -1,23 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import InputBox from "./InputBox";
-import {
-  Alert,
-  Avatar,
-  Box,
-  Button,
-  Dialog,
-  Divider,
-  IconButton,
-  Stack,
-} from "@mui/material";
+import { InputBox } from "../";
+import { Avatar, Button, Dialog, IconButton } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import { useTheme } from "../context/themeContext";
-import { useDispatch, useSelector } from "react-redux";
-import { useSocket } from "../context/socketContext";
+import { useTheme } from "../../context/themeContext";
 import {
   useLazySearchUserQuery,
   useSendFriendRequestMutation,
-} from "../redux/api/api";
+} from "../../redux/api/api";
 import toast from "react-hot-toast";
 
 const NewContact = ({ open, onclose }) => {
@@ -56,17 +45,17 @@ const NewContact = ({ open, onclose }) => {
   }, [member]);
 
   return (
-    <Dialog open={open} onClose={onclose}>
-      <Box
-        padding={2}
-        bgcolor={mode === "light" ? "white" : "#1a2236"}
-        className="contact-dialog w-[300px] sm:w-[400px]"
-      >
-        <Stack
-          direction={"row"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
+    <Dialog
+      open={open}
+      onClose={onclose}
+      sx={{
+        "& .MuiDialog-paper": {
+          bgcolor: mode === "light" ? "white" : "#1a2236",
+        },
+      }}
+    >
+      <div className="p-4 w-[300px] sm:w-[400px]">
+        <div className="flex items-center justify-between">
           <h1 className="capitalize font-[700] text-base sm:text-xl text-[#0a80ff]">
             add new contact
           </h1>
@@ -82,35 +71,21 @@ const NewContact = ({ open, onclose }) => {
               className={`${mode === "light" ? "text-black" : "text-white"}`}
             />
           </IconButton>
-        </Stack>
-        <Divider
-          sx={{
-            borderColor: mode === "dark" && "#293145",
-            marginTop: "5px",
-          }}
-        />
+        </div>
         <InputBox
           value={member}
           onChange={handleInputChange}
           placeholder="Search member"
           ref={inputRef}
-          className="w-full outline-none bg-[rgba(241,241,241,1)] p-2 my-6 dark:bg-inherit placeholder:text-black dark:text-white dark:border-[1px] dark:border-solid dark:border-[#293145] dark:placeholder:text-white"
+          className="w-full outline-none bg-[rgba(241,241,241,1)] p-2 my-6 dark:bg-inherit placeholder:text-black dark:text-white dark:border-[1px] dark:border-solid dark:border-[#293145] dark:placeholder:text-white/50"
         />
         {users.length > 0 &&
           users?.map((user, index) => (
-            <Stack
+            <div
               key={index}
-              direction={"row"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              className="dark:text-white cursor-pointer hover:bg-[#262b3c]"
+              className="flex justify-between items-center dark:text-white cursor-pointer hover:bg-[#262b3c]"
             >
-              <Stack
-                direction={"row"}
-                gap={3}
-                alignItems={"center"}
-                padding={1}
-              >
+              <div className="flex gap-6 items-center p-2">
                 <Avatar
                   src={user?.avatar}
                   sx={{
@@ -134,10 +109,10 @@ const NewContact = ({ open, onclose }) => {
                     Add Friend
                   </Button>
                 )}
-              </Stack>
-            </Stack>
+              </div>
+            </div>
           ))}
-      </Box>
+      </div>
     </Dialog>
   );
 };

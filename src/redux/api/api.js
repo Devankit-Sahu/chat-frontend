@@ -6,6 +6,28 @@ const api = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: `${server}/api/v1/` }),
   tagTypes: ["Chat", "User"],
   endpoints: (builder) => ({
+    signIn: builder.mutation({
+      query: (data) => ({
+        url: "auth/login",
+        method: "POST",
+        credentials: "include",
+        body: data,
+      }),
+    }),
+    signUp: builder.mutation({
+      query: (data) => ({
+        url: "auth/register",
+        method: "POST",
+        credentials: "include",
+        body: data,
+      }),
+    }),
+    signOut: builder.query({
+      query: () => ({
+        url: "auth/logout",
+        credentials: "include",
+      }),
+    }),
     myChats: builder.query({
       query: () => ({
         url: "chat/mychats",
@@ -94,6 +116,13 @@ const api = createApi({
         body: data,
       }),
     }),
+    myGroups: builder.query({
+      query: () => ({
+        url: "chat/all-groups",
+        credentials: "include",
+      }),
+      providesTags: ["Chat"],
+    }),
     addMembersToGroup: builder.mutation({
       query: (data) => ({
         url: "chat/add-members",
@@ -123,6 +152,9 @@ const api = createApi({
 
 export default api;
 export const {
+  useSignInMutation,
+  useSignUpMutation,
+  useLazySignOutQuery,
   useMyChatsQuery,
   useGetAllMessagesQuery,
   useGetChatDetailsQuery,
@@ -134,6 +166,7 @@ export const {
   useGetNotificatonQuery,
   useMyFriendsQuery,
   useNewGroupMutation,
+  useMyGroupsQuery,
   useAddMembersToGroupMutation,
   useRemoveMembersFromGroupMutation,
   useLeaveGroupMutation,

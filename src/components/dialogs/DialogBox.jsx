@@ -7,9 +7,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Box,
 } from "@mui/material";
-import { useTheme } from "../context/themeContext";
+import { useTheme } from "../../context/themeContext";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -32,11 +31,14 @@ const DialogBox = ({
       keepMounted
       onClose={handleClose}
       aria-describedby="alert-dialog-slide-description"
+      sx={{
+        "& .MuiDialog-paper": {
+          bgcolor: mode === "light" ? "white" : "#1a2236",
+          color: mode === "light" ? "black" : "white",
+        },
+      }}
     >
-      <Box
-        bgcolor={mode === "light" ? "white" : "#1a2236"}
-        color={mode === "light" ? "black" : "white"}
-      >
+      <div>
         {dialogtitle && (
           <DialogTitle sx={{ fontWeight: 600 }}>{dialogtitle}</DialogTitle>
         )}
@@ -58,7 +60,7 @@ const DialogBox = ({
             {dialogactionText2}
           </Button>
         </DialogActions>
-      </Box>
+      </div>
     </Dialog>
   );
 };

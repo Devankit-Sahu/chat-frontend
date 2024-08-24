@@ -1,14 +1,14 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { LayoutLoader } from "./components";
+import { Layout, LayoutLoader } from "./components";
 import { ThemeProvider } from "./context/themeContext";
-import ProtectedRoute from "./components/ProtectedRoute";
-const HomePage = lazy(() => import("./pages/HomePage"));
 const ChatPage = lazy(() => import("./pages/ChatPage"));
+const GroupPage = lazy(() => import("./pages/GroupPage"));
+const ChatContainer = lazy(() => import("./components/chat/ChatContainer"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const SignupPage = lazy(() => import("./pages/SignupPage"));
-const ChangePasswordPage = lazy(() => import("./pages/ChangePasswordPage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+import ProtectedRoute from "./components/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
@@ -45,27 +45,58 @@ const App = () => {
     if (!user) getUser();
   }, []);
 
-  return isLoading ? (
-    <LayoutLoader />
-  ) : (
+  return (
     <BrowserRouter>
       <Suspense fallback={<LayoutLoader />}>
         <ThemeProvider value={{ mode, toggleMode }}>
           <Routes>
             <Route
+              path="/"
               element={
                 <SocketProvider>
-                  <ProtectedRoute user={user} />
+                  <ProtectedRoute user={user} isLoading={isLoading}>
+                    <Layout />
+                  </ProtectedRoute>
                 </SocketProvider>
               }
             >
-              <Route path="/" element={<HomePage />}></Route>
-              <Route path="/chat/:chatId" element={<ChatPage />} />
+              <Route
+                index
+                element={
+                  <ProtectedRoute user={user} isLoading={isLoading}>
+                    <ChatPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/groups"
+                element={
+                  <ProtectedRoute user={user} isLoading={isLoading}>
+                    <GroupPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/chat/:chatId"
+                element={
+                  <ProtectedRoute user={user} isLoading={isLoading}>
+                    <ChatContainer />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/group/:chatId"
+                element={
+                  <ProtectedRoute user={user} isLoading={isLoading}>
+                    <ChatContainer />
+                  </ProtectedRoute>
+                }
+              />
             </Route>
             <Route
               path="/login"
               element={
-                <ProtectedRoute user={!user} redirect="/">
+                <ProtectedRoute user={!user} isLoading={isLoading} redirect="/">
                   <LoginPage />
                 </ProtectedRoute>
               }
@@ -73,19 +104,11 @@ const App = () => {
             <Route
               path="/signup"
               element={
-                <ProtectedRoute user={!user} redirect="/">
+                <ProtectedRoute user={!user} isLoading={isLoading} redirect="/">
                   <SignupPage />
                 </ProtectedRoute>
               }
             />
-            {/* <Route
-              path="/auth/change-password"
-              element={
-                <ProtectedRoute user={!user} redirect="/">
-                  <ChangePasswordPage />
-                </ProtectedRoute>
-              }
-            /> */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </ThemeProvider>

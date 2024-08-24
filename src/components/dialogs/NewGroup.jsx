@@ -1,9 +1,7 @@
 import React, { memo, useState } from "react";
 import {
-  Box,
   Dialog,
   Divider,
-  Stack,
   Typography,
   Checkbox,
   Avatar,
@@ -15,17 +13,18 @@ import {
   IndeterminateCheckBox as IndeterminateCheckBoxIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
-import { InputBox, Loader } from ".";
-import { useTheme } from "../context/themeContext";
+import { InputBox, Loader } from "..";
+import { useTheme } from "../../context/themeContext";
 import toast from "react-hot-toast";
-import { useMyFriendsQuery, useNewGroupMutation } from "../redux/api/api";
+import { useMyFriendsQuery, useNewGroupMutation } from "../../redux/api/api";
+import { useNavigate } from "react-router-dom";
 
 const NewGroup = ({ open, onclose }) => {
   const [members, setMembers] = useState([]);
   const [checkedIndices, setCheckedIndices] = useState([]);
   const [groupName, setGroupName] = useState("");
   const { mode } = useTheme();
-
+  const navigate = useNavigate();
   const { data } = useMyFriendsQuery();
   const [newGroupMutation, { isLoading }] = useNewGroupMutation();
 
@@ -51,36 +50,44 @@ const NewGroup = ({ open, onclose }) => {
       toast.error("Atleast one member is required");
       return;
     }
-    const { data, error } = await newGroupMutation({
+
+    await newGroupMutation({
       name: groupName,
       members,
-    });
-
-    if (data) toast.success(data?.message);
-    else toast.error(error?.data?.message);
+    })
+      .unwrap()
+      .then((res) => {
+        toast.success(res?.message);
+        navigate("/groups");
+      })
+      .catch((error) => {
+        error?.data?.message.forEach((err) =>
+          toast.error(err || "Something Went Wrong")
+        );
+      });
     onclose();
   };
 
   return (
-    <Dialog open={open} onClose={onclose}>
-      <Box
-        padding={2}
-        bgcolor={mode === "light" ? "white" : "#1a2236"}
-        className="group-dialog w-[300px] sm:w-[400px]"
-      >
-        <Stack
-          direction={"row"}
-          alignItems={"center"}
-          justifyContent={"space-between"}
-        >
+    <Dialog
+      open={open}
+      onClose={onclose}
+      sx={{
+        "& .MuiDialog-paper": {
+          bgcolor: mode === "light" ? "white" : "#1a2236",
+        },
+      }}
+    >
+      <div className="p-4 w-[300px] sm:w-[400px]">
+        <div className="flex justify-between items-center">
           <h1 className="capitalize font-[700] text-base sm:text-xl text-[#0a80ff]">
-            new group
+            create new group
           </h1>
           <IconButton
             onClick={onclose}
             sx={{
               ":hover": {
-                backgroundColor: mode === "light" ? "black" : "#252d43",
+                backgroundColor: mode === "light" ? "#e5e5e5" : "#252d43",
               },
             }}
           >
@@ -88,19 +95,13 @@ const NewGroup = ({ open, onclose }) => {
               className={`${mode === "light" ? "text-black" : "text-white"}`}
             />
           </IconButton>
-        </Stack>
-        <Divider
-          sx={{
-            borderColor: mode === "dark" && "#293145",
-            marginTop: "5px",
-          }}
-        />
+        </div>
         <InputBox
           id="groupName"
           name="groupName"
           value={groupName}
           onChange={(e) => setGroupName(e.target.value)}
-          className="w-full outline-none bg-[#f1f0ed] p-2 my-2 placeholder:text-black/80 text-black dark:bg-inherit dark:border-[1px] dark:border-solid dark:border-[#293145] dark:placeholder:text-white dark:text-white"
+          className="w-full outline-none bg-[#f1f0ed] p-2 my-2 placeholder:text-black/80 text-black dark:bg-inherit dark:border-[1px] dark:border-solid dark:border-[#293145] dark:placeholder:text-white/50 dark:text-white"
           placeholder="Enter group name"
         />
         <Typography
@@ -117,18 +118,14 @@ const NewGroup = ({ open, onclose }) => {
             marginTop: "5px",
           }}
         />
-        <Box sx={{ overflowY: "auto", maxHeight: "380px" }}>
+        <div style={{ overflowY: "auto", maxHeight: "380px" }}>
           {data?.myFriends?.map((item, index) => (
-            <Box paddingY={"10px"} key={index}>
-              <Stack
-                direction={"row"}
-                alignItems={"center"}
-                justifyContent={"space-between"}
-              >
-                <Stack direction={"row"} gap={1} alignItems={"center"}>
+            <div className="py-[10px]" key={index}>
+              <div className="flex justify-between items-center">
+                <div className="flex gap-2 items-center">
                   <Avatar src={item?.avatar?.url} />
                   <p className="text-black dark:text-white">{item.username}</p>
-                </Stack>
+                </div>
                 <Checkbox
                   id={`member-${index}`}
                   className="cursor-pointer"
@@ -143,11 +140,11 @@ const NewGroup = ({ open, onclose }) => {
                     },
                   }}
                 />
-              </Stack>
-            </Box>
+              </div>
+            </div>
           ))}
-        </Box>
-        <Box>
+        </div>
+        <div>
           <Button
             onClick={createGroupHandler}
             className="w-full"
@@ -161,8 +158,8 @@ const NewGroup = ({ open, onclose }) => {
               "Create"
             )}
           </Button>
-        </Box>
-      </Box>
+        </div>
+      </div>
     </Dialog>
   );
 };

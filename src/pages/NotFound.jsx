@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Stack } from "@mui/material";
+import { Button } from "@mui/material";
 import { Error as ErrorIcon } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
@@ -9,14 +9,9 @@ const NotFound = () => {
     navigate("/");
   };
   return (
-    <Stack
-      height={"100vh"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      gap={2}
-    >
+    <section className="not-found flex flex-col h-screen gap-4 items-center justify-center bg-white dark:bg-[#1a2236] text-black dark:text-white">
       <ErrorIcon sx={{ fontSize: "3rem" }} />
-      <p className="uppercase font-bold">page not found</p>
+      <p className="uppercase font-bold">page you are looking for not found</p>
       <Button
         onClick={navigateToHome}
         color="warning"
@@ -25,7 +20,7 @@ const NotFound = () => {
       >
         go to home
       </Button>
-    </Stack>
+    </section>
   );
 };
 

@@ -13,7 +13,7 @@ import { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { userExists, userNotExists } from "./redux/features/auth/authSlice";
-import { server } from "./config/config";
+import { deployed_backend_url } from "./config/config";
 import { SocketProvider } from "./context/socketContext";
 
 const App = () => {
@@ -32,9 +32,12 @@ const App = () => {
 
   const getUser = async () => {
     try {
-      const { data } = await axios.get(`${server}/api/v1/user/me`, {
-        withCredentials: true,
-      });
+      const { data } = await axios.get(
+        `${deployed_backend_url}/api/v1/user/me`,
+        {
+          withCredentials: true,
+        }
+      );
       dispatch(userExists(data.user));
     } catch (error) {
       dispatch(userNotExists());

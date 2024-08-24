@@ -6,13 +6,11 @@ const SocketContext = createContext(null);
 
 export const SocketProvider = ({ children }) => {
   const socket = useMemo(
-    () => io(local_backend_url, { withCredentials: true }),
+    () => io(deployed_backend_url, { withCredentials: true }),
     []
   );
   return (
-    <SocketContext.Provider value={deployed_backend_url}>
-      {children}
-    </SocketContext.Provider>
+    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );
 };
 

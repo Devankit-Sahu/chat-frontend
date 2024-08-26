@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { deployed_backend_url } from "../../config/config";
+import { backend_url } from "../../config/config";
 
 const api = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({ baseUrl: `${deployed_backend_url}/api/v1/` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${backend_url}/api/v1/` }),
   tagTypes: ["Chat", "User"],
   endpoints: (builder) => ({
     signIn: builder.mutation({
@@ -31,6 +31,13 @@ const api = createApi({
     myChats: builder.query({
       query: () => ({
         url: "chat/mychats",
+        credentials: "include",
+      }),
+      providesTags: ["Chat"],
+    }),
+    searchChat: builder.query({
+      query: ({ name }) => ({
+        url: `chat/search?name=${name}`,
         credentials: "include",
       }),
       providesTags: ["Chat"],
@@ -156,6 +163,7 @@ export const {
   useSignUpMutation,
   useLazySignOutQuery,
   useMyChatsQuery,
+  useLazySearchChatQuery,
   useGetAllMessagesQuery,
   useGetChatDetailsQuery,
   useSendAttachmentsMutation,

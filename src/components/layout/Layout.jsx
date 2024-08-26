@@ -15,13 +15,14 @@ import {
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  incrementRequestNotification,
+  incrementNotification,
   setNewMessageNotification,
 } from "../../redux/features/notification/notificationSlice";
 
 const Layout = () => {
+  const { user } = useSelector((state) => state.auth);
   const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
-  const { newMessageNotification, requestNotification } = useSelector(
+  const { newMessageNotification, notificationCount } = useSelector(
     (state) => state.notification
   );
   const socket = useSocket();
@@ -38,21 +39,24 @@ const Layout = () => {
     navigate("/");
   }, [refetch, navigate]);
 
-  const newMessageNotificationHandler = (data) => {
-    if (location.pathname.startsWith("/chat")) return;
-    localStorage.setItem(
-      NEW_MESSAGE_NOTIFICATION,
-      JSON.stringify(newMessageNotification)
-    );
-    dispatch(setNewMessageNotification(data));
-  };
+  const newMessageNotificationHandler = useCallback(
+    (data) => {
+      if (location.pathname.startsWith("/chat")) return;
+      dispatch(setNewMessageNotification(data));
+    },
+    [dispatch, location.pathname]
+  );
 
-  const requestNotificationHandler = () => {
-    dispatch(incrementRequestNotification());
-  };
+  const requestNotificationHandler = useCallback(
+    ({ count }) => {
+      dispatch(incrementNotification(count));
+    },
+    [dispatch]
+  );
 
   const onlineUsersHandler = (data) => {
-    setOnlineUsers(data);
+    const filteredUsers = data.filter((u) => u !== user?._id);
+    setOnlineUsers(filteredUsers);
   };
 
   const newMessageHandler = useCallback((data) => {
@@ -68,21 +72,13 @@ const Layout = () => {
   });
 
   const renderLeftSidebar = () => {
-    if (location.pathname === "/" || location.pathname.startsWith("/chat")) {
+    const isGroupChat = location.pathname.startsWith("/group");
+    const isChatView = location.pathname.startsWith("/chat");
+
+    if (location.pathname === "/" || isChatView || isGroupChat) {
       return (
         <ChatSidebar
-          isGroup={false}
-          isMobile={isMobile}
-          isLoading={isLoading}
-          data={data}
-          onlineUsers={onlineUsers}
-          newMessageNotification={newMessageNotification}
-        />
-      );
-    } else if (location.pathname.startsWith("/group")) {
-      return (
-        <ChatSidebar
-          isGroup={true}
+          isGroup={isGroupChat}
           isMobile={isMobile}
           isLoading={isLoading}
           data={data}
@@ -91,6 +87,7 @@ const Layout = () => {
         />
       );
     }
+
     return null;
   };
 
@@ -98,9 +95,9 @@ const Layout = () => {
 
   return (
     <div className="flex h-screen w-screen bg-white text-black dark:text-white dark:bg-[#1a2236] overscroll-x-hidden overflow-y-hidden">
-      <Sidebar requestNotification={requestNotification} />
+      <Sidebar notificationCount={notificationCount} />
       {/* for mobile screen */}
-      <MobileNav requestNotification={requestNotification} />
+      <MobileNav notificationCount={notificationCount} />
       {isMobile ? (
         isChatDetailView ? (
           <div className="w-full">

@@ -35,7 +35,8 @@ const NewContact = ({ open, onclose }) => {
     const timeOut = setTimeout(() => {
       if (member) {
         searchUser(member)
-          .then((res) => setUsers(res?.data?.users))
+          .unwrap()
+          .then((res) => setUsers(res?.users))
           .catch((error) => console.log(error));
       }
     }, 500);
@@ -83,9 +84,9 @@ const NewContact = ({ open, onclose }) => {
           users?.map((user, index) => (
             <div
               key={index}
-              className="flex justify-between items-center dark:text-white cursor-pointer hover:bg-[#262b3c]"
+              className="flex justify-between items-center p-2 dark:text-white cursor-pointer hover:bg-[#262b3c]"
             >
-              <div className="flex gap-6 items-center p-2">
+              <div className="flex gap-6 items-center">
                 <Avatar
                   src={user?.avatar}
                   sx={{
@@ -100,16 +101,14 @@ const NewContact = ({ open, onclose }) => {
                   }}
                 />
                 <p>{user.username}</p>
-                {user.isFreindRequestExist ? (
-                  <Button onClick={() => deleteRequestHandler()}>
-                    Pending
-                  </Button>
-                ) : (
-                  <Button onClick={() => sendRequestHandler(user._id)}>
-                    Add Friend
-                  </Button>
-                )}
               </div>
+              {user.isFreindRequestExist ? (
+                <Button onClick={() => deleteRequestHandler()}>Pending</Button>
+              ) : (
+                <Button onClick={() => sendRequestHandler(user._id)}>
+                  send
+                </Button>
+              )}
             </div>
           ))}
       </div>

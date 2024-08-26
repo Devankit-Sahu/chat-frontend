@@ -13,7 +13,7 @@ import { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { userExists, userNotExists } from "./redux/features/auth/authSlice";
-import { deployed_backend_url } from "./config/config";
+import { backend_url } from "./config/config";
 import { SocketProvider } from "./context/socketContext";
 
 const App = () => {
@@ -32,12 +32,9 @@ const App = () => {
 
   const getUser = async () => {
     try {
-      const { data } = await axios.get(
-        `${deployed_backend_url}/api/v1/user/me`,
-        {
-          withCredentials: true,
-        }
-      );
+      const { data } = await axios.get(`${backend_url}/api/v1/user/me`, {
+        withCredentials: true,
+      });
       dispatch(userExists(data.user));
     } catch (error) {
       dispatch(userNotExists());
@@ -46,7 +43,7 @@ const App = () => {
 
   useEffect(() => {
     if (!user) getUser();
-  }, []);
+  }, [user]);
 
   return (
     <BrowserRouter>
@@ -56,7 +53,7 @@ const App = () => {
             <Route
               path="/"
               element={
-                <SocketProvider>
+                <SocketProvider user={user}>
                   <ProtectedRoute user={user} isLoading={isLoading}>
                     <Layout />
                   </ProtectedRoute>

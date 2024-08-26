@@ -1,44 +1,42 @@
-import React, { useEffect } from "react";
+import { forwardRef } from "react";
 import { Button, Dialog, Slide, Tooltip, Typography } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import {
   useAcceptFriendRequestMutation,
   useGetNotificatonQuery,
 } from "../../redux/api/api";
-import { resetRequestNotification } from "../../redux/features/notification/notificationSlice";
-import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 import { useTheme } from "../../context/themeContext";
+import moment from "moment";
+import { useDispatch } from "react-redux";
+import { decrementNotification } from "../../redux/features/notification/notificationSlice";
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="right" ref={ref} {...props} />;
 });
 
 const Notification = ({
   isNotificationDialogOpen,
   notificationDialogClose,
-  user,
 }) => {
-  const { data } = useGetNotificatonQuery();
   const [acceptRequest] = useAcceptFriendRequestMutation();
-  const dispatch = useDispatch();
+  const { data: allNotifications } = useGetNotificatonQuery();
   const { mode } = useTheme();
+  const dispatch = useDispatch();
 
   const acceptRequestHandler = async (id) => {
     notificationDialogClose();
+    dispatch(decrementNotification());
     const { data } = await acceptRequest({ requestId: id, accept: true });
     toast.success(data?.message || "Friend request accepted");
   };
 
   const deleteRequestHandler = async (id) => {
     notificationDialogClose();
+    dispatch(decrementNotification());
     const { data } = await acceptRequest({ requestId: id, accept: false });
-    toast.error(data?.message || "Friend request rejected");
+    toast.success(data?.message || "Friend request rejected");
   };
-
-  useEffect(() => {
-    dispatch(resetRequestNotification());
-  }, [dispatch]);
 
   return (
     <Dialog
@@ -67,28 +65,34 @@ const Notification = ({
           style={{ overflowY: "auto", maxHeight: "380px" }}
           className="p-[10px]"
         >
-          {!data?.requests?.length ? (
+          {!allNotifications?.requests?.length ? (
             <p className="p-2">No notifications</p>
           ) : (
-            data?.requests?.map((req, index) => (
+            allNotifications?.requests?.map((req, index) => (
               <div
-                className="bg-[ghostwhite] dark:bg-[#293145] cursor-pointer my-2 p-1 flex justify-between gap-6"
+                className="bg-[ghostwhite] dark:bg-[#293145] cursor-pointer my-2 p-2 rounded flex justify-between gap-6"
                 key={index}
               >
                 <p>{req.sender_id.username} has sent you a frient request</p>
-                <div className="flex items-center gap-2">
-                  <Button
-                    color="error"
-                    onClick={() => deleteRequestHandler(req._id)}
-                  >
-                    Reject
-                  </Button>
-                  <Button
-                    color="success"
-                    onClick={() => acceptRequestHandler(req._id)}
-                  >
-                    Accept
-                  </Button>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      color="error"
+                      onClick={() => deleteRequestHandler(req._id)}
+                    >
+                      Reject
+                    </Button>
+                    <Button
+                      color="success"
+                      onClick={() => acceptRequestHandler(req._id)}
+                    >
+                      Accept
+                    </Button>
+                  </div>
+                  <p className="text-xs text-end text-white/50">
+                    {" "}
+                    {moment(req.createdAt).fromNow()}
+                  </p>
                 </div>
               </div>
             ))

@@ -30,9 +30,7 @@ const LoginPage = () => {
         toast.success(res?.message);
       })
       .catch((error) => {
-        error?.data?.message.forEach((err) =>
-          toast.error(err || "Something Went Wrong")
-        );
+        toast.error(error?.data?.message || "Something Went Wrong");
       });
   };
 
@@ -42,14 +40,15 @@ const LoginPage = () => {
         <div className="flex items-center flex-col gap-3">
           <img className="w-20" src="/logo.svg" alt="logo" />
           <h1 className="text-3xl font-semibold text-white">ChatEase</h1>
-          <p className="text-base text-gray-300">Welcome to ChatEase.</p>
+          <h2 className="text-base text-gray-300">Welcome to ChatEase.</h2>
         </div>
       </div>
       <div className="flex flex-col items-center justify-center p-10 w-full sm:w-[50%] bg-white dark:bg-[#1a2236] text-black dark:text-white">
-        <h2 className="text-3xl font-bold text-center mb-6 my-5">
-          Log in<span className="text-[#274BF4]">.</span>
+        <h2 className="text-center block text-2xl text-gray-300 my-2 sm:hidden">
+          Welcome to <span className="text-[#274BF4]">ChatEase.</span>
         </h2>
-        <form method="post" className="w-[80%] mt-14" onSubmit={handleLogin}>
+        <h2 className="text-2xl font-medium text-center mb-3">Log in</h2>
+        <form method="post" className="w-[80%]" onSubmit={handleLogin}>
           <div className="flex items-center gap-2 my-5 border-b-[1px] border-solid border-b-[#878484]">
             <EmailOutlinedIcon className="text-gray-500 dark:text-gray-300" />
             <InputBox

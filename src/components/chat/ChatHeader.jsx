@@ -65,7 +65,7 @@ const ChatHeader = ({ userTyping, chatId, chatDetails }) => {
               <KeyboardArrowLeftOutlinedIcon />
             </Box>
             <Box className="h-9 w-9 mr-3">
-              <Avatar src={chatDetails?.chat?.avatar?.url} />
+              <Avatar src={chatDetails?.chat?.profile?.url} />
             </Box>
             <Box>
               <h2

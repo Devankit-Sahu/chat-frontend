@@ -12,16 +12,20 @@ import {
   Logout as LogoutIcon,
 } from "@mui/icons-material";
 import { useTheme } from "../../context/themeContext";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLazySignOutQuery } from "../../redux/api/api";
+import { userNotExists } from "../../redux/features/auth/authSlice";
+import { useSocket } from "../../context/socketContext";
 
-const MobileNav = ({ requestNotification }) => {
+const MobileNav = ({ notificationCount }) => {
   const { user } = useSelector((state) => state.auth);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isNotificationDialogOpen, setIsNotificationDialogOpen] =
     useState(false);
+  const socket = useSocket();
   const { mode, toggleMode } = useTheme();
   const [singoutQuery] = useLazySignOutQuery();
+  const dispatch = useDispatch();
 
   const profileDialogClose = () => {
     setIsProfileDialogOpen(false);
@@ -44,9 +48,7 @@ const MobileNav = ({ requestNotification }) => {
         socket.disconnect();
       })
       .catch((error) => {
-        error?.data?.message.forEach((err) =>
-          toast.error(err || "Something Went Wrong")
-        );
+        toast.error(error?.data?.message || "Something Went Wrong");
       });
   };
 
@@ -61,7 +63,7 @@ const MobileNav = ({ requestNotification }) => {
             <GroupIcon />
           </Link>
           <div onClick={() => setIsNotificationDialogOpen(true)}>
-            <Badge badgeContent={requestNotification} color="success">
+            <Badge badgeContent={notificationCount} color="success">
               <NotificationsOutlinedIcon />
             </Badge>
           </div>

@@ -8,14 +8,20 @@ export const notificationSlice = createSlice({
     newMessageNotification: localStorage.getItem(NEW_MESSAGE_NOTIFICATION)
       ? JSON.parse(localStorage.getItem(NEW_MESSAGE_NOTIFICATION))
       : [],
-    requestNotification: 0,
+    notificationCount: localStorage.getItem("notificationCount")
+      ? JSON.parse(localStorage.getItem("notificationCount"))
+      : 0,
   },
   reducers: {
-    incrementRequestNotification: (state) => {
-      state.requestNotification += 1;
+    incrementNotification: (state, action) => {
+      state.notificationCount += action.payload;
+      localStorage.setItem("notificationCount", state.notificationCount);
     },
-    resetRequestNotification: (state) => {
-      state.requestNotification = 0;
+    decrementNotification: (state) => {
+      if (state.notificationCount > 0) {
+        state.notificationCount -= 1;
+        localStorage.setItem("notificationCount", state.notificationCount);
+      }
     },
     setNewMessageNotification: (state, action) => {
       const { chatId } = action.payload;
@@ -28,10 +34,18 @@ export const notificationSlice = createSlice({
       } else {
         state.newMessageNotification.push({ chatId, count: 1 });
       }
+      localStorage.setItem(
+        NEW_MESSAGE_NOTIFICATION,
+        JSON.stringify(state.newMessageNotification)
+      );
     },
     removeNewMessageNotification: (state, action) => {
       state.newMessageNotification = state.newMessageNotification.filter(
         (item) => item.chatId !== action.payload
+      );
+      localStorage.setItem(
+        NEW_MESSAGE_NOTIFICATION,
+        JSON.stringify(state.newMessageNotification)
       );
     },
   },
@@ -39,8 +53,8 @@ export const notificationSlice = createSlice({
 
 export default notificationSlice;
 export const {
-  incrementRequestNotification,
-  resetRequestNotification,
+  incrementNotification,
+  decrementNotification,
   setNewMessageNotification,
   removeNewMessageNotification,
 } = notificationSlice.actions;

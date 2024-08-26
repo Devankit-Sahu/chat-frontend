@@ -18,7 +18,7 @@ import toast from "react-hot-toast";
 import { userNotExists } from "../../redux/features/auth/authSlice";
 import { useLazySignOutQuery } from "../../redux/api/api";
 
-const Sidebar = ({ requestNotification }) => {
+const Sidebar = ({ notificationCount }) => {
   const { user } = useSelector((state) => state.auth);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isNotificationDialogOpen, setIsNotificationDialogOpen] =
@@ -48,9 +48,7 @@ const Sidebar = ({ requestNotification }) => {
         socket.disconnect();
       })
       .catch((error) => {
-        error?.data?.message.forEach((err) =>
-          toast.error(err || "Something Went Wrong")
-        );
+        toast.error(error?.data?.message || "Something Went Wrong");
       });
   };
 
@@ -78,7 +76,7 @@ const Sidebar = ({ requestNotification }) => {
             placement="right-start"
             className="cursor-pointer text-gray-500 dark:text-white dark:hover:bg-[#293145] p-3 rounded-md"
           >
-            <Badge badgeContent={requestNotification} color="success">
+            <Badge badgeContent={notificationCount} color="success">
               <NotificationsOutlinedIcon />
             </Badge>
           </Tooltip>
@@ -130,7 +128,6 @@ const Sidebar = ({ requestNotification }) => {
         <Notification
           isNotificationDialogOpen={isNotificationDialogOpen}
           notificationDialogClose={notificationDialogClose}
-          user={user}
         />
       )}
     </div>

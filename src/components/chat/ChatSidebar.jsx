@@ -1,4 +1,4 @@
-import React, { lazy, memo, useState } from "react";
+import React, { lazy, memo, useCallback, useEffect, useState } from "react";
 const NewGroup = lazy(() => import("../dialogs/NewGroup"));
 const NewContact = lazy(() => import("../dialogs/NewContact"));
 import { Skeleton, Tooltip } from "@mui/material";
@@ -7,6 +7,8 @@ import {
   GroupOutlined as GroupOutlinedIcon,
 } from "@mui/icons-material";
 import { Search, ChatListItem } from "../";
+import { useLazySearchChatQuery } from "../../redux/api/api";
+import toast from "react-hot-toast";
 
 const ChatSidebar = ({
   isGroup,
@@ -14,15 +16,13 @@ const ChatSidebar = ({
   isLoading,
   data,
   onlineUsers,
-  newMessageNotification = [
-    {
-      chatId: "",
-      count: 0,
-    },
-  ],
+  newMessageNotification = [],
 }) => {
   const [isNewGroupDialogOpen, setIsNewGroupDialogOpen] = useState(false);
   const [isNewContactDialogOpen, setIsNewContactDialogOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [searchChatQuery] = useLazySearchChatQuery();
+  const [searchResults, setSearchResults] = useState([]);
 
   const handleNewGroupDialogClose = () => {
     setIsNewGroupDialogOpen(false);
@@ -32,7 +32,31 @@ const ChatSidebar = ({
     setIsNewContactDialogOpen(false);
   };
 
-  const filteredChats = data?.chats?.filter((chat) =>
+  const handleInputChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const searchResultsHandler = useCallback(() => {
+    if (search) {
+      searchChatQuery({ name: search })
+        .unwrap()
+        .then((res) => setSearchResults(res.searchedChats))
+        .catch((error) => {
+          toast.error(error.data.message);
+          setSearchResults([]);
+        });
+    } else {
+      setSearchResults([]);
+    }
+  }, [search, searchChatQuery]);
+
+  useEffect(() => {
+    let timeOut = setTimeout(searchResultsHandler, 200);
+    return () => clearTimeout(timeOut);
+  }, [search]);
+
+  const chats = searchResults.length > 0 ? searchResults : data?.chats;
+  const filteredChats = chats?.filter((chat) =>
     isGroup ? chat.groupChat === true : chat.groupChat === false
   );
 
@@ -55,7 +79,7 @@ const ChatSidebar = ({
                 className="cursor-pointer text-zinc-500 rounded-[5px] dark:text-white hover:bg-[#eeeeee] dark:hover:bg-[#293145] dark:border dark:border-solid dark:border-[#293145] px-2 py-1"
                 onClick={() => setIsNewGroupDialogOpen(true)}
               >
-                <Tooltip arrow title="New Group" placement="bottom">
+                <Tooltip arrow title="Create New Group" placement="bottom">
                   <GroupOutlinedIcon />
                 </Tooltip>
               </div>
@@ -63,19 +87,19 @@ const ChatSidebar = ({
                 className="cursor-pointer text-zinc-500 rounded-[5px] dark:text-white hover:bg-[#eeeeee] dark:hover:bg-[#293145] dark:border dark:border-solid dark:border-[#293145] px-2 py-1"
                 onClick={() => setIsNewContactDialogOpen(true)}
               >
-                <Tooltip arrow title="New Chat" placement="bottom">
+                <Tooltip arrow title="Create New Chat" placement="bottom">
                   <EditNoteOutlinedIcon />
                 </Tooltip>
               </div>
             </div>
           </div>
           <div className="mt-3">
-            <Search />
+            <Search search={search} handleInputChange={handleInputChange} />
           </div>
         </div>
         {/* users list */}
         {isLoading ? (
-          <div className="flex gap-1">
+          <div className="flex flex-col gap-1">
             {Array.from([1, 2, 3, 4]).map((i, index) => (
               <Skeleton
                 key={index}
@@ -90,12 +114,12 @@ const ChatSidebar = ({
             {filteredChats?.map((chat, index) => {
               const { _id, members } = chat;
 
-              const newMessageNotifi = newMessageNotification.find(
+              const newMessageNotifi = newMessageNotification?.find(
                 ({ chatId }) => chatId === _id
               );
 
               const isOnline = members?.some((member) =>
-                onlineUsers.includes(member)
+                onlineUsers.includes(member._id)
               );
 
               return (

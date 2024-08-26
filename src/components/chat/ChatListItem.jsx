@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Avatar, AvatarGroup, Box, Stack } from "@mui/material";
+import { Avatar, Box, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const ChatListItem = ({ chat, isOnline, isGroup, newMessageNotifi }) => {
@@ -14,14 +14,7 @@ const ChatListItem = ({ chat, isOnline, isGroup, newMessageNotifi }) => {
         paddingY={"12px"}
       >
         <Box position={"relative"}>
-          {chat.groupChat ? (
-            <AvatarGroup>
-              <Avatar />
-              <Avatar />
-            </AvatarGroup>
-          ) : (
-            <Avatar src={chat?.profile?.url} className="w-full h-full" />
-          )}
+          <Avatar src={chat?.profile?.url} className="w-full h-full" />
           {isOnline && !chat?.groupChat && (
             <div className="absolute z-50 w-2 h-2 bg-green-600 rounded-full bottom-0 right-[6px]"></div>
           )}

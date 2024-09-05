@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from "react";
-import { ChatSidebar, Sidebar, MobileNav } from "../";
+import React, { useCallback, useEffect, useState } from "react";
+import { ChatSidebar, Sidebar } from "../";
 import { useMediaQuery } from "@mui/material";
-import { useMyChatsQuery } from "../../redux/api/api";
+import { useGetNotificatonQuery, useMyChatsQuery } from "../../redux/api/api";
 import { useErrors } from "../../hooks/useErrorsHook";
 import { useSocket } from "../../context/socketContext";
 import { useSocketEvent } from "../../hooks/useSocketEventHook";
@@ -18,6 +18,7 @@ import {
   incrementNotification,
   setNewMessageNotification,
 } from "../../redux/features/notification/notificationSlice";
+import toast from "react-hot-toast";
 
 const Layout = () => {
   const { user } = useSelector((state) => state.auth);
@@ -31,6 +32,8 @@ const Layout = () => {
   const isMobile = useMediaQuery("(max-width: 800px)");
   const location = useLocation();
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const { data: allNotifications, isLoading: loading } =
+    useGetNotificatonQuery();
 
   useErrors([{ isError, error }]);
 
@@ -48,8 +51,9 @@ const Layout = () => {
   );
 
   const requestNotificationHandler = useCallback(
-    ({ count }) => {
+    ({ count, message }) => {
       dispatch(incrementNotification(count));
+      toast.success(message);
     },
     [dispatch]
   );
@@ -71,49 +75,47 @@ const Layout = () => {
     [NEW_MESSAGE_RECIEVED]: newMessageHandler,
   });
 
-  const renderLeftSidebar = () => {
-    const isGroupChat = location.pathname.startsWith("/group");
-    const isChatView = location.pathname.startsWith("/chat");
+  useEffect(() => {
+    if (!loading) {
+      const notificationCount = allNotifications?.requests?.length || 0;
+      dispatch(incrementNotification(notificationCount));
+    }
+  }, [loading, dispatch, allNotifications]);
 
-    if (location.pathname === "/" || isChatView || isGroupChat) {
-      return (
+  return (
+    <div className="flex h-screen w-screen bg-white text-black dark:text-white dark:bg-[#1a2236] overscroll-x-hidden overflow-y-hidden">
+      <Sidebar
+        notificationCount={notificationCount}
+        allNotifications={allNotifications}
+      />
+      <div
+        className={`${
+          isMobile
+            ? !location.pathname.startsWith("/chat")
+              ? "w-full"
+              : "hidden"
+            : "w-[330px]"
+        }`}
+      >
         <ChatSidebar
-          isGroup={isGroupChat}
           isMobile={isMobile}
           isLoading={isLoading}
           data={data}
           onlineUsers={onlineUsers}
           newMessageNotification={newMessageNotification}
         />
-      );
-    }
-
-    return null;
-  };
-
-  const isChatDetailView = location.pathname.startsWith("/chat/");
-
-  return (
-    <div className="flex h-screen w-screen bg-white text-black dark:text-white dark:bg-[#1a2236] overscroll-x-hidden overflow-y-hidden">
-      <Sidebar notificationCount={notificationCount} />
-      {/* for mobile screen */}
-      <MobileNav notificationCount={notificationCount} />
-      {isMobile ? (
-        isChatDetailView ? (
-          <div className="w-full">
-            <Outlet />
-          </div>
-        ) : (
-          <div className="w-full">{renderLeftSidebar()}</div>
-        )
-      ) : (
-        <>
-          <div className="w-[330px]">{renderLeftSidebar()}</div>
-          <div className="w-[calc(100%-330px)]">
-            <Outlet />
-          </div>
-        </>
-      )}
+      </div>
+      <div
+        className={`${
+          isMobile
+            ? location.pathname.startsWith("/chat")
+              ? "w-full"
+              : "hidden"
+            : "w-[calc(100%-330px)]"
+        }`}
+      >
+        <Outlet />
+      </div>
     </div>
   );
 };

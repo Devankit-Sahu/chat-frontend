@@ -35,14 +35,6 @@ const ChatDetails = ({
   const [leaveGroupMutation] = useLeaveGroupMutation("");
   const navigate = useNavigate();
 
-  const handleMember = (id) => {
-    setMembers((prevMembers) =>
-      prevMembers.includes(id)
-        ? prevMembers.filter((m) => m !== id)
-        : [...prevMembers, id]
-    );
-  };
-
   const addMemberHandler = async () => {
     const { data, error } = await addMemberMutation({ chatId, members });
     if (data) toast.success(data?.message);
@@ -66,6 +58,7 @@ const ChatDetails = ({
       });
       if (data) toast.success(data?.message);
       else toast.error(error?.data?.message);
+      handleChatDetailClose();
       navigate(`/chat/${chatId}`);
     } else {
       setMembers((prevMembers) =>
@@ -94,20 +87,17 @@ const ChatDetails = ({
         <div className="flex justify-center">
           <Avatar sx={{ width: 90, height: 90 }} />
         </div>
-        <div className="flex justify-between my-3">
-          <h2 className="font-medium text-xl capitalize">
-            {chatDetails?.chat?.name}
-          </h2>
-          {chatDetails?.chat?.groupChat && <span>edit</span>}
-        </div>
-        <div className="flex justify-between my-3">
+        <h2 className="font-medium text-xl text-center my-3 capitalize">
+          {chatDetails?.chat?.name}
+        </h2>
+        <div className="flex justify-between items-center my-3">
           <h2 className="font-medium text-xl capitalize">created at</h2>
           <h2 className="text-xs">
             {moment(chatDetails?.chat?.createdAt).format("DD-MM-YYYY")}
           </h2>
         </div>
         {chatDetails?.chat?.groupChat && (
-          <h2 className="font-medium text-xl capitalize my-3">friends</h2>
+          <h2 className="font-medium text-xl capitalize my-3">members</h2>
         )}
         <div style={{ overflowY: "auto", maxHeight: "380px" }}>
           {chatDetails?.chat?.groupChat &&

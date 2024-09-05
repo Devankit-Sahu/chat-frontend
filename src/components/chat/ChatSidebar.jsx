@@ -11,7 +11,6 @@ import { useLazySearchChatQuery } from "../../redux/api/api";
 import toast from "react-hot-toast";
 
 const ChatSidebar = ({
-  isGroup,
   isMobile,
   isLoading,
   data,
@@ -56,9 +55,6 @@ const ChatSidebar = ({
   }, [search]);
 
   const chats = searchResults.length > 0 ? searchResults : data?.chats;
-  const filteredChats = chats?.filter((chat) =>
-    isGroup ? chat.groupChat === true : chat.groupChat === false
-  );
 
   return (
     <>
@@ -71,8 +67,8 @@ const ChatSidebar = ({
       >
         <div className="border-b border-zinc-200 dark:border-[#293145] p-5">
           <div className="flex justify-between items-center">
-            <h4 className="mb-0 text-zinc-800 text-xl dark:text-white font-bold">
-              {isGroup ? "Groups" : "Chats"}
+            <h4 className="mb-0 text-zinc-800 text-xl dark:text-white font-bold capitalize">
+              Chats
             </h4>
             <div className="flex gap-2 items-center">
               <div
@@ -111,7 +107,7 @@ const ChatSidebar = ({
           </div>
         ) : (
           <div className="overflow-y-auto h-[calc(100%-170px)]">
-            {filteredChats?.map((chat, index) => {
+            {chats?.map((chat, index) => {
               const { _id, members } = chat;
 
               const newMessageNotifi = newMessageNotification?.find(
@@ -126,7 +122,6 @@ const ChatSidebar = ({
                 <ChatListItem
                   key={index}
                   chat={chat}
-                  isGroup={isGroup}
                   isOnline={isOnline && !chat.groupChat}
                   newMessageNotifi={newMessageNotifi}
                 />

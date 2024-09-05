@@ -1,10 +1,7 @@
 import { forwardRef } from "react";
 import { Button, Dialog, Slide, Tooltip, Typography } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
-import {
-  useAcceptFriendRequestMutation,
-  useGetNotificatonQuery,
-} from "../../redux/api/api";
+import { useAcceptFriendRequestMutation } from "../../redux/api/api";
 import toast from "react-hot-toast";
 import { useTheme } from "../../context/themeContext";
 import moment from "moment";
@@ -18,9 +15,9 @@ const Transition = forwardRef(function Transition(props, ref) {
 const Notification = ({
   isNotificationDialogOpen,
   notificationDialogClose,
+  allNotifications,
 }) => {
   const [acceptRequest] = useAcceptFriendRequestMutation();
-  const { data: allNotifications } = useGetNotificatonQuery();
   const { mode } = useTheme();
   const dispatch = useDispatch();
 
@@ -50,7 +47,7 @@ const Notification = ({
         },
       }}
     >
-      <div className="notification-dialog w-[300px] sm:w-[400px] dark:text-white">
+      <div className="notification-dialog w-full dark:text-white">
         <div className="flex justify-between p-4">
           <Typography fontWeight={"700"}>All Notifications</Typography>
           <Tooltip
@@ -73,7 +70,9 @@ const Notification = ({
                 className="bg-[ghostwhite] dark:bg-[#293145] cursor-pointer my-2 p-2 rounded flex justify-between gap-6"
                 key={index}
               >
-                <p>{req.sender_id.username} has sent you a frient request</p>
+                <p className="text-sm">
+                  {req.sender_id.username} has sent you a frient request
+                </p>
                 <div>
                   <div className="flex items-center gap-2">
                     <Button
@@ -90,7 +89,6 @@ const Notification = ({
                     </Button>
                   </div>
                   <p className="text-xs text-end text-white/50">
-                    {" "}
                     {moment(req.createdAt).fromNow()}
                   </p>
                 </div>

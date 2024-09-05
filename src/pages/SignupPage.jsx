@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputBox, Loader } from "../components";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Avatar } from "@mui/material";
 import {
   EmailOutlined as EmailOutlinedIcon,
@@ -14,7 +14,8 @@ import { userExists } from "../redux/features/auth/authSlice";
 import { useSignUpMutation } from "../redux/api/api";
 
 const SignupPage = () => {
-  const [user, setUser] = useState({
+  const { user } = useSelector((state) => state.auth);
+  const [userDetails, setUserDetails] = useState({
     username: "",
     email: "",
     password: "",
@@ -24,10 +25,11 @@ const SignupPage = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const dispatch = useDispatch();
   const [sinupMutation, { isLoading }] = useSignUpMutation();
+  const navigate = useNavigate();
 
   const handleUserChange = (e) => {
-    setUser({
-      ...user,
+    setUserDetails({
+      ...userDetails,
       [e.target.name]: e.target.value,
     });
   };
@@ -35,8 +37,8 @@ const SignupPage = () => {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
 
-    setUser({
-      ...user,
+    setUserDetails({
+      ...userDetails,
       avatar: selectedFile,
     });
 
@@ -53,15 +55,15 @@ const SignupPage = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     const userData = new FormData();
-    userData.append("username", user.username);
-    userData.append("email", user.email);
-    userData.append("password", user.password);
-    userData.append("about", user.about);
-    if (user.avatar) {
-      userData.append("avatar", user.avatar);
+    userData.append("username", userDetails.username);
+    userData.append("email", userDetails.email);
+    userData.append("password", userDetails.password);
+    userData.append("about", userDetails.about);
+    if (userDetails.avatar) {
+      userData.append("avatar", userDetails.avatar);
     }
 
-    if (!user.username || !user.email || !user.password) {
+    if (!userDetails.username || !userDetails.email || !userDetails.password) {
       toast.error("All fields are required");
       return;
     }
@@ -80,6 +82,10 @@ const SignupPage = () => {
         toast.error(error?.data?.message || "Something Went Wrong");
       });
   };
+
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [user]);
 
   return (
     <section className="flex h-screen w-screen overflow-x-hidden">
@@ -118,7 +124,7 @@ const SignupPage = () => {
               type="text"
               id="username"
               name="username"
-              value={user.username}
+              value={userDetails.username}
               onChange={handleUserChange}
               placeholder="username"
               className="w-full h-10 outline-none placeholder:text-gray-600 dark:placeholder:text-gray-300 bg-transparent"
@@ -130,7 +136,7 @@ const SignupPage = () => {
               type="email"
               id="email"
               name="email"
-              value={user.email}
+              value={userDetails.email}
               onChange={handleUserChange}
               placeholder="example@gmail.com"
               className="w-full h-10 outline-none placeholder:text-gray-600 dark:placeholder:text-gray-300 bg-transparent"
@@ -142,7 +148,7 @@ const SignupPage = () => {
               type="text"
               id="about"
               name="about"
-              value={user.about}
+              value={userDetails.about}
               onChange={handleUserChange}
               placeholder="about yourself"
               className="w-full h-10 outline-none placeholder:text-gray-600 dark:placeholder:text-gray-300 bg-transparent"
@@ -154,7 +160,7 @@ const SignupPage = () => {
               type="password"
               id="password"
               name="password"
-              value={user.password}
+              value={userDetails.password}
               onChange={handleUserChange}
               autoComplete="off"
               placeholder="password"

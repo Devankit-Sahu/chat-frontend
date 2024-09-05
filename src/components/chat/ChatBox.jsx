@@ -83,7 +83,7 @@ const ChatBox = ({ chatMessages, isLoading }) => {
     <Box className="relative h-[80vh] w-full overflow-hidden">
       {isLoading ? (
         <div className="px-8 py-3 h-full flex items-center justify-center">
-          <Loader className="border-t-2 border-t-[#000] w-[60px] h-[60px]" />
+          <Loader className="border-t-2 border-t-[#000] dark:border-t-[#fff] w-[60px] h-[60px]" />
         </div>
       ) : (
         <Box

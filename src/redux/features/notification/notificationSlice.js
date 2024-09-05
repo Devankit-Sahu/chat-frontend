@@ -14,7 +14,7 @@ export const notificationSlice = createSlice({
   },
   reducers: {
     incrementNotification: (state, action) => {
-      state.notificationCount += action.payload;
+      state.notificationCount = action.payload;
       localStorage.setItem("notificationCount", state.notificationCount);
     },
     decrementNotification: (state) => {

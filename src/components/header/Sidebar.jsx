@@ -9,7 +9,6 @@ import {
   DarkModeOutlined as DarkModeOutlinedIcon,
   LightModeOutlined as LightModeOutlinedIcon,
   Logout as LogoutIcon,
-  Group as GroupIcon,
 } from "@mui/icons-material";
 import { useTheme } from "../../context/themeContext";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +17,7 @@ import toast from "react-hot-toast";
 import { userNotExists } from "../../redux/features/auth/authSlice";
 import { useLazySignOutQuery } from "../../redux/api/api";
 
-const Sidebar = ({ notificationCount }) => {
+const Sidebar = ({ notificationCount, allNotifications }) => {
   const { user } = useSelector((state) => state.auth);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [isNotificationDialogOpen, setIsNotificationDialogOpen] =
@@ -27,6 +26,7 @@ const Sidebar = ({ notificationCount }) => {
   const dispatch = useDispatch();
   const socket = useSocket();
   const [singoutQuery] = useLazySignOutQuery();
+
   const profileDialogClose = () => {
     setIsProfileDialogOpen(false);
   };
@@ -53,19 +53,12 @@ const Sidebar = ({ notificationCount }) => {
   };
 
   return (
-    <div className="hidden w-[80px] h-full p-5 sm:flex sm:flex-col sm:items-center sm:justify-between border-r-[1px] border-solid border-[rgba(209,213,219,1)] dark:text-[#acacac] dark:border-[#293145]">
-      <div className="flex flex-col gap-6">
+    <div className="fixed z-0 bottom-0 w-full h-[60px] sm:w-[80px] sm:h-full sm:relative p-5 flex flex-row sm:flex-col items-center justify-between border-t sm:border-r border-solid border-zinc-300 dark:border-[#293145]">
+      <div className="flex flex-row sm:flex-col items-center gap-2 sm:gap-6">
         <Link to={"/"}>
           <Tooltip title="Chats" arrow placement="right-start">
             <span className="cursor-pointer text-gray-500 dark:text-white dark:hover:bg-[#293145] p-3 rounded-md">
               <ChatIcon />
-            </span>
-          </Tooltip>
-        </Link>
-        <Link to={"/groups"}>
-          <Tooltip title="Groups" arrow placement="right-start">
-            <span className="cursor-pointer text-gray-500 dark:text-white dark:hover:bg-[#293145] p-3 rounded-md">
-              <GroupIcon />
             </span>
           </Tooltip>
         </Link>
@@ -74,7 +67,7 @@ const Sidebar = ({ notificationCount }) => {
             title="Notifications"
             arrow
             placement="right-start"
-            className="cursor-pointer text-gray-500 dark:text-white dark:hover:bg-[#293145] p-3 rounded-md"
+            className="cursor-pointer text-gray-500 dark:text-white dark:hover:bg-[#293145] rounded-md"
           >
             <Badge badgeContent={notificationCount} color="success">
               <NotificationsOutlinedIcon />
@@ -82,7 +75,7 @@ const Sidebar = ({ notificationCount }) => {
           </Tooltip>
         </div>
       </div>
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex flex-row sm:flex-col items-center gap-2 sm:gap-4">
         <Tooltip arrow title="Logout" placement="right">
           <span
             onClick={logoutHandler}
@@ -113,7 +106,7 @@ const Sidebar = ({ notificationCount }) => {
           onClick={() => setIsProfileDialogOpen(true)}
           className="cursor-pointer"
         >
-          <Avatar />
+          <Avatar sx={{ width: "30px", height: "30px" }} />
         </div>
       </div>
       {isProfileDialogOpen && (
@@ -128,6 +121,7 @@ const Sidebar = ({ notificationCount }) => {
         <Notification
           isNotificationDialogOpen={isNotificationDialogOpen}
           notificationDialogClose={notificationDialogClose}
+          allNotifications={allNotifications}
         />
       )}
     </div>

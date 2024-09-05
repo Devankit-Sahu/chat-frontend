@@ -2,9 +2,9 @@ import React, { memo } from "react";
 import { Avatar, Box, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const ChatListItem = ({ chat, isOnline, isGroup, newMessageNotifi }) => {
+const ChatListItem = ({ chat, isOnline, newMessageNotifi }) => {
   return (
-    <Link to={`${isGroup ? `/group/${chat._id}` : `/chat/${chat._id}`}`}>
+    <Link to={`/chat/${chat._id}`}>
       <Stack
         direction={"row"}
         alignItems={"center"}
@@ -24,7 +24,9 @@ const ChatListItem = ({ chat, isOnline, isGroup, newMessageNotifi }) => {
             <h4 className="text-black dark:text-white font-medium text-md tracking-[.2px] capitalize">
               {chat.name}
             </h4>
-            <p>{chat.latestMessage}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-500">
+              {chat.latestMessage}
+            </p>
           </div>
           {newMessageNotifi && (
             <span className="text-xs bg-[#0a80ff] w-7 h-7 rounded-full flex items-center justify-center">

@@ -9,7 +9,6 @@ import SendMessageForm from "./chat/SendMessageForm";
 import Layout from "./layout/Layout";
 import LayoutLoader from "./layout/LayoutLoader";
 import Loader from "./layout/Loader";
-import MobileNav from "./header/MobileNav";
 import Sidebar from "./header/Sidebar";
 import FileMenu from "./FileMenu";
 import InputBox from "./InputBox";
@@ -34,7 +33,6 @@ export {
   Layout,
   LayoutLoader,
   Loader,
-  MobileNav,
   Sidebar,
   FileMenu,
   InputBox,

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InputBox, Loader } from "../components";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   EmailOutlined as EmailOutlinedIcon,
   LockOutlined as LockOutlinedIcon,
@@ -11,10 +11,12 @@ import toast from "react-hot-toast";
 import { useSignInMutation } from "../redux/api/api";
 
 const LoginPage = () => {
+  const { user } = useSelector((state) => state.auth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [signinMutation, { isLoading }] = useSignInMutation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -33,6 +35,10 @@ const LoginPage = () => {
         toast.error(error?.data?.message || "Something Went Wrong");
       });
   };
+
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [user]);
 
   return (
     <section className="flex h-screen w-screen">
